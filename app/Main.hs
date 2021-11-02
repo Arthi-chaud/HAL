@@ -1,6 +1,23 @@
+--
+-- EPITECH PROJECT, 2021
+-- HAL
+-- File description:
+-- Main
+--
+
 module Main where
+import System.Environment
+import AdvancedParser
 
-import Lib
+type FilePath = String
 
-main :: IO ()
-main = someFunc
+fromFiles :: [FilePath] -> IO Int
+
+repl :: IO Int
+
+main :: IO Int
+main = do
+    args <- getArgs
+    case args of
+        [] -> repl
+        list -> 

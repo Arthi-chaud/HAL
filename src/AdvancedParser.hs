@@ -60,12 +60,6 @@ p1 <%> p2 = Parser (\s -> do
     Just (parsed2, rest2++rest1)
     )
 
-(<!>) :: Parser a -> Parser b -> Parser b
-p1 <!> p2 = Parser (\s -> do
-    (_, rest) <- runParser p1 s
-    runParser p2 rest
-    )
-
 -- parseChar 'a'"abcd"
 --Just ('a', "bcd")
 -- parseChar 'z'"abcd"
@@ -141,15 +135,14 @@ parseMany p = Parser {runParser = \s ->
 parseSome :: Parser a -> Parser [a]
 parseSome p1 = (\(a,b) -> a:b) <$> (p1 <&> parseMany p1)
 
-parseUInt :: Parser Int
-parseUInt = Parser (\string -> 
+parseUInt :: Parser Integer
+parseUInt = Parser $ \string -> 
     runParser (read <$> (parseSome (parseAnyChar ['0'..'9']))) string
-    )
 
-parseInt :: Parser Int
+parseInt :: Parser Integer
 parseInt = Parser intParser
     where
-        intParser :: ParserFunction Int
+        intParser :: ParserFunction Integer
         intParser s = do
             (signs, rest) <- runParser (parseMany (parseChar '-')) s
             runParser ((\nb-> nb * ((-1) ^ length signs)) <$> parseUInt) rest
@@ -184,3 +177,6 @@ parseParenthesis = Parser $ \s -> do
     case res of
         ('(':parsed, rest) -> Just (init parsed, rest)
         _ -> Nothing
+
+parseWhitespaces :: Parser String
+parseWhitespaces = parseMany (parseAnyChar " \t")

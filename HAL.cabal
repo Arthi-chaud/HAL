@@ -26,6 +26,8 @@ source-repository head
 library
   exposed-modules:
       AdvancedParser
+      FileManager
+      HAL
   other-modules:
       Paths_HAL
   hs-source-dirs:
