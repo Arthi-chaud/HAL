@@ -39,9 +39,10 @@ specs = testGroup "Campaign-related functions"
         testCase "AdvancedParser: case_parseWord" TestAdvancedParser.case_parseWord,
         testCase "AdvancedParser: case_parseWord_frontSpace," TestAdvancedParser.case_parseWord_frontSpace,
 
-        --testCase "TestHAL.case_parseQuote" TestHAL.case_parseQuote,
-        testCase "TestHAL.case_parseExpr" TestHAL.case_parseExpr,
-        testCase "TestHAL.case_parseAtom" TestHAL.case_parseAtom
-        --testCase "TestHAL.case_parseExpr_quoted_params" TestHAL.case_parseExpr_quoted_params,
+        testCase "TestHAL: case_parseQuote" TestHAL.case_parseQuote,
+        testCase "TestHAL: case_parseQuote_sizeOneList" TestHAL.case_parseQuote_sizeOneList,
+        testCase "TestHAL: case_parseExpr" TestHAL.case_parseExpr,
+        testCase "TestHAL: case_parseAtom" TestHAL.case_parseAtom,
+        testCase "TestHAL: case_parseExpr_quoted_params" TestHAL.case_parseExpr_quoted_params
         --testCase "TestHAL.case_parseExpr_nil" TestHAL.case_parseExpr_nil
     ]
