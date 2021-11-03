@@ -8,16 +8,9 @@
 module Main where
 import System.Environment
 import AdvancedParser
+import System.Exit
 
 type FilePath = String
 
-fromFiles :: [FilePath] -> IO Int
-
-repl :: IO Int
-
 main :: IO Int
-main = do
-    args <- getArgs
-    case args of
-        [] -> repl
-        list -> 
+main = exitWith (ExitSuccess)

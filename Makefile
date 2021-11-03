@@ -14,7 +14,7 @@ all:		$(NAME)
 
 $(NAME):
 			stack build
-			cp $(BUILD_FOLDER)/$(NAME) ./$(NAME)
+			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 
 
 clean:

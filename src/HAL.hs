@@ -14,6 +14,17 @@ data Atom = Symbol String | Int Integer | Nil
 
 data Expr = Node [Expr] | Leaf Atom
 
+instance Eq Atom where
+    (==) (Symbol a) (Symbol b) = a == b
+    (==) (Int a) (Int b) = a == b
+    (==) Nil Nil = True
+    (==) _  _ = False
+
+instance Eq Expr where
+    (==) (Leaf a) (Leaf b) = a == b
+    (==) (Node a) (Node b) = a == b
+    (==) _ _ = False
+
 instance Show Atom where
     show (Symbol x) = show x
     show (Int x) = show x
@@ -21,7 +32,7 @@ instance Show Atom where
 
 instance Show Expr where
     show (Leaf x) = show x
-    show (Node x) = '[' : (intercalate ", " (map (show) x)) ++ "]"
+    show (Node x) = '[' : intercalate ", " (map (show) x) ++ "]"
 
 parseAtom :: Parser Atom
 parseAtom = Parser $ \s -> do
@@ -36,25 +47,27 @@ parseAtom = Parser $ \s -> do
         digits = "0123456789"
         letters = "abcdefghijklmnopqrstuvwxyz"
         maj = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    
+parseQuote :: Parser Expr
+parseQuote = Parser $ \s -> do
+    (r, rest) <- runParser (parseChar '\'' *> parseExpr) s
+    return (Node [Leaf $ Symbol "quote", r], rest)
 
 parseExprContent :: Parser Expr
-parseExprContent = Parser $ \s -> case runParser parseWhiteSpaces s of
-        Just (_, "") -> Just (Leaf Nil, "")
-        _ -> do
-        (parsed, rest) <- runParser (parseExpr  <|> (Leaf <$> parseAtom)) s
-        (res, rest2) <- runParser parseExprContent rest
-        case res of
-            Leaf x -> return (Node (parsed: [Leaf x]), rest2)
-            Node x -> return (Node (parsed: x), rest2)
+parseExprContent = Parser $ \s -> do
+    (parsed, rest) <- runParser (parseQuoteExpr <|> (Leaf <$> parseAtom)) s
+    case runParser parseExprContent rest of
+        Nothing -> return (parsed, "")
+        Just (Leaf x, rest2) -> return (Node (parsed: [Leaf x]), rest2)
+        Just (Node x, rest2) -> return (Node (parsed: x), rest2)
+
 
 parseExpr :: Parser Expr
 parseExpr = parseWhiteSpaces *> (parseParenthesis <%> parseExprContent)
 
-parseQuoteExpr :: Parser Expr
-parseQuoteExpr = Parser $ \s -> do
-    (r, rest) <- runParser (parseChar '\'' *> parseExpr) s
-    return (Node [Leaf $ Symbol "quote", r], rest)
 
+parseQuoteExpr :: Parser Expr
+parseQuoteExpr = parseQuote <|> parseExpr
 {--
 (foo 2 3)
 (define 4 2)

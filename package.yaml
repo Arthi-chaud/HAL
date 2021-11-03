@@ -26,7 +26,7 @@ library:
   source-dirs: src
 
 executables:
-  hal:
+  HAL:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -46,3 +46,6 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - HAL
+    - HUnit
+    - test-framework
+    - test-framework-hunit
