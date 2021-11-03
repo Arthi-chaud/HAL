@@ -8,17 +8,18 @@
 module HAL where
 import AdvancedParser
 import Data.List
+import Control.Applicative ( Alternative((<|>), empty) )
 
 data Atom = Symbol String | Int Integer | Nil
 
-data Sexpr = Node [Sexpr] | Leaf Atom
+data Expr = Node [Expr] | Leaf Atom
 
 instance Show Atom where
     show (Symbol x) = show x
     show (Int x) = show x
     show Nil = "Nil"
 
-instance Show Sexpr where
+instance Show Expr where
     show (Leaf x) = show x
     show (Node x) = '[' : (intercalate ", " (map (show) x)) ++ "]"
 
@@ -36,15 +37,28 @@ parseAtom = Parser $ \s -> do
         letters = "abcdefghijklmnopqrstuvwxyz"
         maj = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-parseSexprContent :: Parser Sexpr
-parseSexprContent = Parser $ \s -> case runParser parseWhiteSpaces s of
+parseExprContent :: Parser Expr
+parseExprContent = Parser $ \s -> case runParser parseWhiteSpaces s of
         Just (_, "") -> Just (Leaf Nil, "")
         _ -> do
-        (parsed, rest) <- runParser (parseOr parseSexpr (Leaf <$> parseAtom)) s
-        (rest1, rest2) <- runParser parseSexprContent rest
-        case rest1 of
-                Leaf x -> return (Node (parsed: [Leaf x]), rest2)
-                Node x -> return (Node (parsed : x), rest2)
+        (parsed, rest) <- runParser (parseExpr  <|> (Leaf <$> parseAtom)) s
+        (res, rest2) <- runParser parseExprContent rest
+        case res of
+            Leaf x -> return (Node (parsed: [Leaf x]), rest2)
+            Node x -> return (Node (parsed: x), rest2)
 
-parseSexpr :: Parser Sexpr
-parseSexpr = parseWhiteSpaces *> (parseParenthesis <%> parseSexprContent)
+parseExpr :: Parser Expr
+parseExpr = parseWhiteSpaces *> (parseParenthesis <%> parseExprContent)
+
+parseQuoteExpr :: Parser Expr
+parseQuoteExpr = Parser $ \s -> do
+    (r, rest) <- runParser (parseChar '\'' *> parseExpr) s
+    return (Node [Leaf $ Symbol "quote", r], rest)
+
+{--
+(foo 2 3)
+(define 4 2)
+
+parseExpr -> (foo 2 3) -> Expr Node [Symbol "foo", Int 2, int 3]
+parseExpr -> (define 4 2) -> Expr Node [Symbol "define", Int 4, Int 2]
+--}
