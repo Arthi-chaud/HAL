@@ -41,8 +41,8 @@ case_parseExpr_quoted_params =  assertEqual "Example 1" expected actual
       expected = Just (Node [Leaf $ Symbol "append", Node [Leaf $ Symbol "quote", Leaf $ Int 1], Node [Leaf $ Symbol "quote", Node [Leaf $ Int 2]], Node [Leaf $ Symbol "quote", Node [Leaf $ Int 3, Leaf $ Int 4]]], "")
       actual = runParser parseExpr "(append '1 '(2) '(3 4))"
 
---case_parseExpr_nil :: Assertion
---case_parseExpr_nil =  assertEqual "Example 1" expected actual
---    where 
---      expected = Just (Node [Leaf Symbol "cons", Int 1, Node [Leaf Symbol "quote", Leaf Nil]], "")
---      actual = runParser parseExpr "(cons 1 '())"
+case_parseExpr_nil :: Assertion
+case_parseExpr_nil =  assertEqual "Example 1" expected actual
+    where 
+      expected = Just (Node [Leaf $ Symbol "cons", Leaf $ Int 1, Node [Leaf $ Symbol "quote", Leaf Nil]], "")
+      actual = runParser parseExpr "(cons 1 '())"

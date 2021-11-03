@@ -41,25 +41,30 @@ parseAtom = Parser $ \s -> do
         Just (int, "") -> Just (Int int, rest)
         _ -> return (Symbol parsed, rest)
 
-    
+parseNil :: Parser Atom
+parseNil =  Nil <$ (parseWhitespaces *> (parseChar '(' <&> parseChar ')'))
+
 parseQuote :: Parser Expr
 parseQuote = Parser $ \s -> do
-    (r, rest) <- runParser (parseWhiteSpaces *> (parseChar '\'' *> (parseExpr <|> (Leaf <$> parseAtom)))) s
+    (r, rest) <- runParser (parseWhiteSpaces *> parseChar '\'' *> parser) s
     return (Node [Leaf $ Symbol "quote", r], rest)
+    where
+        parser = Leaf <$> parseNil <|> parseExpr <|> (Leaf <$> parseAtom)
 
 parseQuoteExpr :: Parser Expr
 parseQuoteExpr = parseQuote <|> parseExpr
 
 parseExprContent :: Parser Expr
 parseExprContent = Parser $ \s -> do
-    (parsed, rest) <- runParser (parseQuoteExpr <|> (Leaf <$> parseAtom)) s
+    (parsed, rest) <- runParser parser s
     case runParser parseWhitespaces rest of
         Just (_, "") -> return (Node [parsed], rest)
         _ -> case runParser parseExprContent rest of
             Just (Leaf x, rest2) -> return (Node (parsed: [Leaf x]), rest2)
             Just (Node x, rest2) -> return (Node (parsed: x), rest2)
             Nothing -> Nothing
-
+    where
+        parser = parseQuoteExpr <|> (Leaf <$> parseAtom)
 
 parseExpr :: Parser Expr
 parseExpr = parseWhiteSpaces *> (parseParenthesis <%> parseExprContent)
