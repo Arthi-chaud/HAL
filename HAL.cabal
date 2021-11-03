@@ -52,6 +52,7 @@ test-suite HAL-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      TestAdvancedParser
       TestHAL
       Paths_HAL
   hs-source-dirs:

@@ -36,38 +36,35 @@ instance Show Expr where
 
 parseAtom :: Parser Atom
 parseAtom = Parser $ \s -> do
-        (parsed, rest) <- runParser firstParser s
-        case runParser parseInt parsed of
-                Just (nb, "") -> return (Int nb, rest)
-                _ -> return (Symbol parsed, rest)
-    
-    where
-        firstParser = parseWhiteSpaces *> parseSome (parseAnyChar tokens)
-        tokens = digits ++ letters ++ maj
-        digits = "0123456789"
-        letters = "abcdefghijklmnopqrstuvwxyz"
-        maj = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    (parsed, rest) <- runParser (parseWhitespaces *> parseWord) s
+    case runParser parseInt parsed of
+        Just (int, "") -> Just (Int int, rest)
+        _ -> return (Symbol parsed, rest)
+
     
 parseQuote :: Parser Expr
 parseQuote = Parser $ \s -> do
-    (r, rest) <- runParser (parseChar '\'' *> parseExpr) s
+    (r, rest) <- runParser (parseWhiteSpaces *> (parseChar '\'' *> (parseExpr <|> (Leaf <$> parseAtom)))) s
     return (Node [Leaf $ Symbol "quote", r], rest)
+
+parseQuoteExpr :: Parser Expr
+parseQuoteExpr = parseQuote <|> parseExpr
 
 parseExprContent :: Parser Expr
 parseExprContent = Parser $ \s -> do
-    (parsed, rest) <- runParser (parseQuoteExpr <|> (Leaf <$> parseAtom)) s
-    case runParser parseExprContent rest of
-        Nothing -> return (parsed, "")
-        Just (Leaf x, rest2) -> return (Node (parsed: [Leaf x]), rest2)
-        Just (Node x, rest2) -> return (Node (parsed: x), rest2)
+    (parsed, rest) <- runParser (parseExpr <|> (Leaf <$> parseAtom)) s
+    case runParser parseWhitespaces rest of
+        Just (_, "") -> return (parsed, rest)
+        _ -> case runParser parseExprContent rest of
+            Just (Leaf x, rest2) -> return (Node (parsed: [Leaf x]), rest2)
+            Just (Node x, rest2) -> return (Node (parsed: x), rest2)
+            Nothing -> Nothing
 
 
 parseExpr :: Parser Expr
 parseExpr = parseWhiteSpaces *> (parseParenthesis <%> parseExprContent)
 
 
-parseQuoteExpr :: Parser Expr
-parseQuoteExpr = parseQuote <|> parseExpr
 {--
 (foo 2 3)
 (define 4 2)

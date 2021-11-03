@@ -9,7 +9,8 @@ module AdvancedParser where
 
 import Data.Maybe (isNothing)
 import Text.Read
-import Control.Applicative ( Alternative((<|>), empty) )
+import Data.Char
+import Control.Applicative ( Alternative((<|>), empty), some )
 
 type ParserFunction a = String -> Maybe (a, String)
 
@@ -180,3 +181,23 @@ parseParenthesis = Parser $ \s -> do
 
 parseWhitespaces :: Parser String
 parseWhitespaces = parseMany (parseAnyChar " \t")
+        
+
+--parseWord :: Parser String
+--parseWord = Parser $ \s -> case runParser parseWhitespaces s of
+--    Just ("", "") -> Just ([], "")
+--    Just ("", a:b) -> runParser ((a :) <$> parseWord) b
+--    Just (a, rest) -> Just ([], a ++ rest)
+--    _ -> Nothing
+
+parseNotSpace :: Parser Char
+parseNotSpace = Parser anyCharParser
+    where
+        anyCharParser :: ParserFunction Char 
+        anyCharParser s
+            | null s = Nothing
+            | isSpace (head s) = Nothing
+            | otherwise = Just (head s, tail s)
+
+parseWord :: Parser String
+parseWord = some parseNotSpace

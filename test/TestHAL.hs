@@ -14,14 +14,20 @@ import Test.HUnit (Assertion, assertEqual)
 case_parseQuote :: Assertion
 case_parseQuote =  assertEqual "Example 1" expected actual
     where 
-      expected = Just (Node [Leaf (Symbol "quote"), Node [Leaf (Int 1), Leaf (Int 2), Leaf (Int 3)]], "")
-      actual = runParser parseQuote "'(1 2 3)"
+      expected = Just (Node [Leaf (Symbol "quote"), Node [Leaf (Int 1), Leaf (Int 2), Leaf (Int 3)]], "  ")
+      actual = runParser parseQuote "'(1 2 3)  "
+
+case_parseAtom :: Assertion
+case_parseAtom =  assertEqual "Example 1" expected actual
+    where 
+      expected = Just (Int 1, " 2 3")
+      actual = runParser parseAtom "1 2 3"
 
 case_parseExpr :: Assertion
 case_parseExpr =  assertEqual "Example 1" expected actual
     where 
-      expected = Just (Node [Leaf (Symbol "+"), Leaf (Int 1), Leaf (Int 2)], "")
-      actual = runParser parseExpr "(+ 1 2)"
+      expected = Just (Node [Leaf $ Symbol "+", Leaf (Int 1), Leaf (Int 2)], "  ")
+      actual = runParser parseExpr  "(+ 1 2)  "
 
 --case_parseExpr_quoted_params :: Assertion
 --case_parseExpr_quoted_params =  assertEqual "Example 1" expected actual
