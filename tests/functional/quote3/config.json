@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "quote.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo \"'toto\" > quote.scm",
+    "teardown": "rm quote.scm"
+}
