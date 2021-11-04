@@ -1,0 +1,7 @@
+{
+    "name": "HAL",
+    "binary name": "hal",
+    "binary path": ".",
+    "interpreter": null,
+    "tests folder": "tests/functional"
+}

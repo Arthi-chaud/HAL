@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "cons.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo '(cons 1 (cons 2 (cons 3 '())))' > cons.scm",
+    "teardown": "rm cons.scm"
+}

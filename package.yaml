@@ -39,7 +39,7 @@ executables:
 tests:
   HAL-test:
     main:                Spec.hs
-    source-dirs:         test
+    source-dirs:         tests
     ghc-options:
     - -threaded
     - -rtsopts

@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "cdr.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo '(cdr '(1 2 3))' > cdr.scm",
+    "teardown": "rm cdr.scm"
+}
