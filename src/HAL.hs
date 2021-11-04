@@ -15,9 +15,15 @@ evaluate :: Expr -> MaybeExpr
 evaluate expr = case expr of
     Leaf x -> Right $ Leaf x
     List x -> Right $ List x
-    Procedure (Leaf (Symbol "quote"):args) -> quote args
-    Procedure (Leaf (Symbol "cons"):args) -> cons args
+    Procedure (Leaf (Symbol name):args) -> evaluateProcedure name args
     _ -> Left "Not implemented yet"
+
+evaluateProcedure :: String -> [Expr] -> MaybeExpr
+evaluateProcedure name args = case name of
+    "quote" -> quote args
+    "cons" -> cons args
+    "car" -> car args
+    _ -> Left $ "Not implemented: " ++ name
 
 evaluateAll :: [Expr] -> Either ErrorMessage [Expr]
 evaluateAll [] = Right []
@@ -48,3 +54,12 @@ quote args = case checkParamCount 1 args of
             Procedure x -> Right $ List x
             x -> Right x
         _ -> Left "error"
+
+car :: [Expr] -> MaybeExpr
+car args =  case evaluateAll args of
+    Left message -> Left message
+    Right args -> case checkParamCount 1 args of
+        Left msg -> Left ("car: " ++ msg)
+        Right args1 -> case args1 of
+            [List (a:b)] -> Right a
+            _ -> Left "car: Invalid argument type"

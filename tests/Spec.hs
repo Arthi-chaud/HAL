@@ -53,9 +53,13 @@ specs = testGroup "Campaign-related functions"
 
         testCase "TestHAL: case_HALCons_Leafs" TestHAL.case_HALCons_Leafs,
         testCase "TestHAL: case_HALCons_LeafAndList" TestHAL.case_HALCons_LeafAndList,
+        testCase "TestHAL: case_HALCons_ListAndLeaf" TestHAL.case_HALCons_ListAndLeaf,
         testCase "TestHAL: case_HALCons_ListAndList" TestHAL.case_HALCons_ListAndList,
         testCase "TestHAL: case_HALQuote_List" TestHAL.case_HALQuote_List, 
         testCase "TestHAL: case_HALQuote_Int" TestHAL.case_HALQuote_Int, 
         testCase "TestHAL: case_HALQuote_QuoteOnQuote" TestHAL.case_HALQuote_QuoteOnQuote,
-        testCase "TestHAL: case_HALQuote_QuoteOnQuoteonQuote" TestHAL.case_HALQuote_QuoteOnQuoteonQuote 
+        testCase "TestHAL: case_HALQuote_QuoteOnQuoteonQuote" TestHAL.case_HALQuote_QuoteOnQuoteonQuote,
+        testCase "TestHAL: case_HALCar_List" TestHAL.case_HALCar_List,  
+        testCase "TestHAL: case_HALCar_EmptyList" TestHAL.case_HALCar_EmptyList, 
+        testCase "TestHAL: case_HALCar_Int" TestHAL.case_HALCar_Int 
     ]
