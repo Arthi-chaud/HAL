@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "define.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo \"(define add (lambda (a b) (+ a b)))\n(add 1 3)\" > define.scm",
+    "teardown": "rm define.scm"
+}

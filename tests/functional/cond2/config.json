@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "cond.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo \"(cond ((eq? ‘foo (car '(foo bar))) 'here) ((eq? 1 2) 'there) (#t 'nope))\" > cond.scm",
+    "teardown": "rm cond.scm"
+}

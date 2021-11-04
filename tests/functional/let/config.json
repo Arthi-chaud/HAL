@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "let.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo \"(let ((a 2) (b (+ 1 2))) (+ a b)\" > let.scm",
+    "teardown": "rm let.scm"
+}

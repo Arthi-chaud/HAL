@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "define.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo \"(define foo 42)\" > define.scm",
+    "teardown": "rm define.scm"
+}

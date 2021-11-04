@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "cond.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo \"(cond (#f 1) (#t (+ 1 1)))\" > cond.scm",
+    "teardown": "rm cond.scm"
+}
