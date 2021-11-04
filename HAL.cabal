@@ -27,6 +27,7 @@ library
   exposed-modules:
       AdvancedParser
       FileManager
+      HAL
       HALParser
   other-modules:
       Paths_HAL
