@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "eq.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo '(eq? 'foo 'bar)' > eq.scm",
+    "teardown": "rm car.scm"
+}
