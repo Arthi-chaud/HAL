@@ -9,7 +9,7 @@ module HALParser where
 import AdvancedParser
 import Data.List
 import Control.Applicative ( Alternative((<|>), empty) )
-import HAL
+import HALData
 
 parseAtom :: Parser Atom
 parseAtom = Parser $ \s -> do

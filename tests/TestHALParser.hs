@@ -8,7 +8,7 @@
 module TestHALParser where
 
 import HALParser
-import HAL
+import HALData
 import AdvancedParser
 import Test.HUnit (Assertion, assertEqual)
 

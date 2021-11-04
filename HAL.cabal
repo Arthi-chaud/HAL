@@ -28,6 +28,8 @@ library
       AdvancedParser
       FileManager
       HAL
+      HALData
+      HALError
       HALParser
   other-modules:
       Paths_HAL
