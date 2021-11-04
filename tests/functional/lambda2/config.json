@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "lambda.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo \"((lambda (a b) (+ a b)) 1 2)\" > lambda.scm",
+    "teardown": "rm lambda.scm"
+}
