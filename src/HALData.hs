@@ -35,23 +35,22 @@ instance Show Atom where
 
 instance Show Expr where
     show (Leaf x) = show x
-    show (Procedure x) = '[' : printList x ", " ++ "]"
-    -- If only 2 elem
+    show (Procedure x) = '(' : printList x " " ++ ")"
     show (List x) = HALData.showList (List x)
 
 showList :: Expr -> String 
 showList (List a) = case length a of
     2 -> case last a of
-        (Leaf Nil) -> '(' : (_showListContent $ init a) ++ ")"
-        _ -> _showListAsTuple a
-    _ -> '(' : (_showListContent a) ++ ")"
+        (Leaf Nil) -> showListContent $ init a
+        _ -> showListAsTuple a
+    _ -> showListContent a
 showList _ = show AFalse
 
-_showListAsTuple :: [Expr] -> String
-_showListAsTuple a =  '(' : printList a " . " ++ ")"
+showListAsTuple :: [Expr] -> String
+showListAsTuple a =  '(' : printList a " . " ++ ")"
 
-_showListContent :: [Expr] -> String
-_showListContent a = '(' : printList a " " ++ ")"
+showListContent :: [Expr] -> String
+showListContent a = '(' : printList a " " ++ ")"
 
 printList :: [Expr] -> String -> String
 printList list inter =  intercalate inter (map show list)

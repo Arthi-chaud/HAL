@@ -49,5 +49,6 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHALParser: case_parseExpr_quoteOnQuote" TestHALParser.case_parseExpr_quoteOnQuote,
 
         testCase "TestHAL: case_HALCons_Leafs" TestHAL.case_HALCons_Leafs,
-        testCase "TestHAL: case_HALCons_LeafAndList" TestHAL.case_HALCons_LeafAndList
+        testCase "TestHAL: case_HALCons_LeafAndList" TestHAL.case_HALCons_LeafAndList,
+        testCase "TestHAL: case_HALCons_ListAndList" TestHAL.case_HALCons_ListAndList 
     ]
