@@ -43,7 +43,7 @@ showList :: Expr -> String
 showList (List a) = case length a of
     2 -> case last a of
         (Leaf Nil) -> '(' : (_showListContent $ init a) ++ ")"
-        _ -> '(' : (_showListAsTuple  a) ++ ")"
+        _ -> _showListAsTuple a
     _ -> '(' : (_showListContent a) ++ ")"
 showList _ = show AFalse
 
@@ -54,4 +54,4 @@ _showListContent :: [Expr] -> String
 _showListContent a = '(' : printList a " " ++ ")"
 
 printList :: [Expr] -> String -> String
-printList list inter =  intercalate " " (map show list)
+printList list inter =  intercalate inter (map show list)

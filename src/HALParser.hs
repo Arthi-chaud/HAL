@@ -44,4 +44,7 @@ parseExprContent = Parser $ \s -> do
         parser = parseQuoteExpr <|> (Leaf <$> parseAtom)
 
 parseExpr :: Parser Expr
-parseExpr = parseWhiteSpaces *> (parseParenthesis <%> parseExprContent)
+parseExpr = parseWhiteSpaces *> (parseProcedure <|> parseQuoteLeafAtom)
+    where
+        parseProcedure =  parseParenthesis <%> parseExprContent
+        parseQuoteLeafAtom =  parseQuote <|> (Leaf <$> parseAtom)

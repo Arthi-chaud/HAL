@@ -7,6 +7,7 @@
 
 import TestHALParser
 import TestAdvancedParser
+import TestHAL
 import Test.HUnit (Assertion, assertEqual, Testable (test))
 import Test.Framework (Test, testGroup, defaultMain)
 import Test.Framework.Providers.HUnit (testCase)
@@ -45,5 +46,8 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHALParser: case_parseAtom" TestHALParser.case_parseAtom,
         testCase "TestHALParser: case_parseExpr_quoted_params" TestHALParser.case_parseExpr_quoted_params,
         testCase "TestHALParser: case_parseExpr_nil" TestHALParser.case_parseExpr_nil,
-        testCase "TestHALParser: case_parseExpr_quoteOnQuote" TestHALParser.case_parseExpr_quoteOnQuote
+        testCase "TestHALParser: case_parseExpr_quoteOnQuote" TestHALParser.case_parseExpr_quoteOnQuote,
+
+        testCase "TestHAL: case_HALCons_Leafs" TestHAL.case_HALCons_Leafs,
+        testCase "TestHAL: case_HALCons_LeafAndList" TestHAL.case_HALCons_LeafAndList
     ]

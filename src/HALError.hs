@@ -8,9 +8,8 @@
 module HALError where
 
 import HALData
+import Data.Either
 
-data ErrorWapper a = Error String | Valid Expr
+type ErrorMessage = String
 
-instance Show (ErrorWapper a) where
-    show (Error s) = "*** ERROR : " ++ show s
-    show (Valid s) = show s
+type MaybeExpr = Either ErrorMessage Expr
