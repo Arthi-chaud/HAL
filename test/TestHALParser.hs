@@ -5,9 +5,9 @@
 -- TestHAL
 --
 
-module TestHAL where
+module TestHALParser where
 
-import HAL
+import HALParser
 import AdvancedParser
 import Test.HUnit (Assertion, assertEqual)
 

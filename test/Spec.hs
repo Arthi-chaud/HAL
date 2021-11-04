@@ -5,7 +5,7 @@
 -- Spec
 --
 
-import TestHAL
+import TestHALParser
 import TestAdvancedParser
 import Test.HUnit (Assertion, assertEqual, Testable (test))
 import Test.Framework (Test, testGroup, defaultMain)
@@ -39,10 +39,10 @@ specs = testGroup "Campaign-related functions"
         testCase "AdvancedParser: case_parseWord" TestAdvancedParser.case_parseWord,
         testCase "AdvancedParser: case_parseWord_frontSpace," TestAdvancedParser.case_parseWord_frontSpace,
 
-        testCase "TestHAL: case_parseQuote" TestHAL.case_parseQuote,
-        testCase "TestHAL: case_parseQuote_sizeOneList" TestHAL.case_parseQuote_sizeOneList,
-        testCase "TestHAL: case_parseExpr" TestHAL.case_parseExpr,
-        testCase "TestHAL: case_parseAtom" TestHAL.case_parseAtom,
-        testCase "TestHAL: case_parseExpr_quoted_params" TestHAL.case_parseExpr_quoted_params,
-        testCase "TestHAL.case_parseExpr_nil" TestHAL.case_parseExpr_nil
+        testCase "TestHALParser: case_parseQuote" TestHALParser.case_parseQuote,
+        testCase "TestHALParser: case_parseQuote_sizeOneList" TestHALParser.case_parseQuote_sizeOneList,
+        testCase "TestHALParser: case_parseExpr" TestHALParser.case_parseExpr,
+        testCase "TestHALParser: case_parseAtom" TestHALParser.case_parseAtom,
+        testCase "TestHALParser: case_parseExpr_quoted_params" TestHALParser.case_parseExpr_quoted_params,
+        testCase "TestHALParser.case_parseExpr_nil" TestHALParser.case_parseExpr_nil
     ]

@@ -27,7 +27,7 @@ library
   exposed-modules:
       AdvancedParser
       FileManager
-      HAL
+      HALParser
   other-modules:
       Paths_HAL
   hs-source-dirs:
@@ -53,7 +53,7 @@ test-suite HAL-test
   main-is: Spec.hs
   other-modules:
       TestAdvancedParser
-      TestHAL
+      TestHALParser
       Paths_HAL
   hs-source-dirs:
       test

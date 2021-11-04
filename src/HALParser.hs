@@ -5,7 +5,7 @@
 -- HAL
 --
 
-module HAL where
+module HALParser where
 import AdvancedParser
 import Data.List
 import Control.Applicative ( Alternative((<|>), empty) )
