@@ -11,6 +11,8 @@ import HALData
 import HALError
 import HALParser
 
+type Env = [(Expr, Expr)]
+
 evaluate :: Expr -> MaybeExpr
 evaluate expr = case expr of
     Leaf x -> Right $ Leaf x
