@@ -47,8 +47,15 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHALParser: case_parseExpr_quoted_params" TestHALParser.case_parseExpr_quoted_params,
         testCase "TestHALParser: case_parseExpr_nil" TestHALParser.case_parseExpr_nil,
         testCase "TestHALParser: case_parseExpr_quoteOnQuote" TestHALParser.case_parseExpr_quoteOnQuote,
+        testCase "TestHALParser: case_parseExpr_quoteOnQuote2" TestHALParser.case_parseExpr_quoteOnQuote2,
+        testCase "TestHALParser: case_parseExpr_quoteOnQuote3" TestHALParser.case_parseExpr_quoteOnQuote3,
+        testCase "TestHALParser: case_parseExpr_quoteOnQuote3bis" TestHALParser.case_parseExpr_quoteOnQuote3bis,
 
         testCase "TestHAL: case_HALCons_Leafs" TestHAL.case_HALCons_Leafs,
         testCase "TestHAL: case_HALCons_LeafAndList" TestHAL.case_HALCons_LeafAndList,
-        testCase "TestHAL: case_HALCons_ListAndList" TestHAL.case_HALCons_ListAndList 
+        testCase "TestHAL: case_HALCons_ListAndList" TestHAL.case_HALCons_ListAndList,
+        testCase "TestHAL: case_HALQuote_List" TestHAL.case_HALQuote_List, 
+        testCase "TestHAL: case_HALQuote_Int" TestHAL.case_HALQuote_Int, 
+        testCase "TestHAL: case_HALQuote_QuoteOnQuote" TestHAL.case_HALQuote_QuoteOnQuote,
+        testCase "TestHAL: case_HALQuote_QuoteOnQuoteonQuote" TestHAL.case_HALQuote_QuoteOnQuoteonQuote 
     ]

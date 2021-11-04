@@ -27,7 +27,7 @@ instance Eq Expr where
     (==) _ _ = False
 
 instance Show Atom where
-    show (Symbol x) = show x
+    show (Symbol x) = x
     show (Int x) = show x
     show Nil = "Nil"
     show ATrue = "#t"

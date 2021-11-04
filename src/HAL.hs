@@ -32,7 +32,7 @@ cons expr = case evaluateAll expr of
     Left message -> Left message
     Right args -> case checkParamCount 2 args of
         Right (args1:args2:_) -> case args2 of
-            List x -> Right $ List ([args1] ++ x)
+            List x -> Right $ List (args1 : x)
             Procedure x -> Left $ show args2
             x -> Right $ List (args1 : [args2])
         Left msg -> Left ("cons: " ++ msg)
@@ -42,7 +42,9 @@ quote :: [Expr] -> MaybeExpr
 quote args = case checkParamCount 1 args of
         Left msg -> Left ("quote: " ++ msg)
         Right (args1:_) -> case args1 of
-            Procedure (Leaf (Symbol "quote") : rest) -> Right $ Leaf $ Symbol $ '\'' : show rest
+            Procedure (Leaf (Symbol "quote") : rest) -> case quote rest of
+                Left msg -> Left msg
+                Right res -> Right $ Leaf (Symbol ('\'' : show res))
             Procedure x -> Right $ List x
             x -> Right x
         _ -> Left "error"
