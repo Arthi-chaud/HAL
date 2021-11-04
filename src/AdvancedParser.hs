@@ -179,8 +179,15 @@ parseParenthesis = Parser $ \s -> do
         ('(':parsed, rest) -> Just (init parsed, rest)
         _ -> Nothing
 
+parseWhile :: (Char -> Bool) -> Parser String
+parseWhile f = Parser $ \s -> case s of
+    "" -> Just ("", "")
+    (a:b) -> if f a then runParser ((a:) <$> parseWhile f) b
+             else Just ("", a:b)
+
+
 parseWhitespaces :: Parser String
-parseWhitespaces = parseMany (parseAnyChar " \t")
+parseWhitespaces = parseWhile isSpace
         
 
 --parseWord :: Parser String
