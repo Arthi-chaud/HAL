@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "arithmetic1.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo '(div (* 5 2) (- 3))' > arithmetic1.scm",
+    "teardown": "rm arithmetic1.scm"
+}
