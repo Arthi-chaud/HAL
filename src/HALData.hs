@@ -16,12 +16,14 @@ instance Eq Atom where
     (==) (Symbol a) (Symbol b) = a == b
     (==) (Int a) (Int b) = a == b
     (==) Nil Nil = True
+    (==) ATrue ATrue = True
+    (==) AFalse AFalse = True
     (==) _  _ = False
 
 instance Eq Expr where
     (==) (Leaf a) (Leaf b) = a == b
     (==) (Procedure a) (Procedure b) = a == b
-    (==) (List a) (List b) = a == b
+    (==) (List [Leaf Nil]) (List [Leaf Nil]) = True
     (==) _ _ = False
 
 instance Show Atom where
@@ -33,7 +35,7 @@ instance Show Atom where
 
 instance Show Expr where
     show (Leaf x) = show x
-    show (Procedure _) = "#procedure"
+    show (Procedure x) = '[' : printList x ", " ++ "]"
     -- If only 2 elem
     show (List x) = HALData.showList (List x)
 

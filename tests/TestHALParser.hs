@@ -47,3 +47,9 @@ case_parseExpr_nil =  assertEqual "Example 1" expected actual
     where 
       expected = Just (Procedure [Leaf $ Symbol "cons", Leaf $ Int 1, Procedure [Leaf $ Symbol "quote", Leaf Nil]], "")
       actual = runParser parseExpr "(cons 1 '())"
+
+case_parseExpr_quoteOnQuote :: Assertion
+case_parseExpr_quoteOnQuote =  assertEqual "Example 1" expected actual
+    where 
+      expected = Just (Procedure [Leaf $ Symbol "quote", Procedure [Leaf $ Symbol "quote", Leaf Nil]], "")
+      actual = runParser parseExpr "(quote '())"
