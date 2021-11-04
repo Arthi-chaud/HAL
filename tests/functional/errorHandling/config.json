@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "error.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 84,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo '(* foo 2)' > error.scm",
+    "teardown": "rm error.scm"
+}

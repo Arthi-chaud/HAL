@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "foo.scm bar.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo '(define foo 21)' > foo.scm && echo '(* foo 2)' > bar.scm",
+    "teardown": "rm foo.scm bar.scm"
+}
