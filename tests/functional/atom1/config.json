@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "atom.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": "echo '(atom? 'foo)' > atom.scm",
+    "teardown": "rm car.scm"
+}
