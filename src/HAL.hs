@@ -23,6 +23,7 @@ evaluateProcedure name args = case name of
     "quote" -> quote args
     "cons" -> cons args
     "car" -> car args
+    "cdr" -> cdr args
     _ -> Left $ "Not implemented: " ++ name
 
 evaluateAll :: [Expr] -> Either ErrorMessage [Expr]
@@ -63,3 +64,13 @@ car args =  case evaluateAll args of
         Right args1 -> case args1 of
             [List (a:b)] -> Right a
             _ -> Left "car: Invalid argument type"
+
+cdr :: [Expr] -> MaybeExpr
+cdr args =  case evaluateAll args of
+    Left message -> Left message
+    Right args -> case checkParamCount 1 args of
+        Left msg -> Left ("cdr: " ++ msg)
+        Right args1 -> case args1 of
+            [List (a:b:c)] -> Right b
+            [List (a:_)] -> Right $ Leaf Nil
+            _ -> Left "cdr: Invalid argument type"
