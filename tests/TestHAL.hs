@@ -175,3 +175,27 @@ case_HALOperation_Negative = assertEqual "" expected actual
     where
       expected = Right $ (Leaf (Int (-120)), [])
       actual = evaluate ([Procedure [Leaf (Symbol "+"), Leaf (Int 0), Leaf (Int (- 150)), Leaf (Int 30)]], [])
+
+case_HALComparison :: Assertion 
+case_HALComparison = assertEqual "" expected actual
+    where
+      expected = Right $ (Leaf ATrue, [])
+      actual = evaluate ([Procedure [Leaf (Symbol ">"), Leaf (Int 0), Leaf (Int (- 150))]], [])
+
+case_HALComparison2 :: Assertion 
+case_HALComparison2 = assertEqual "" expected actual
+    where
+      expected = Right $ (Leaf AFalse, [])
+      actual = evaluate ([Procedure [Leaf (Symbol "<"), Leaf (Int 0), Leaf (Int (- 150))]], [])
+
+case_HALComparisonWrongType :: Assertion 
+case_HALComparisonWrongType = assertEqual "" expected actual
+    where
+      expected = Left $ "Operation: '12' Invalid argument type"
+      actual = evaluate ([Procedure [Leaf (Symbol "<"), Procedure [Leaf $ Symbol "quote", Leaf (Symbol "12")], Leaf (ATrue )]], [])
+
+case_HALComparisonDefineValue :: Assertion 
+case_HALComparisonDefineValue = assertEqual "" expected actual
+    where
+      expected = Right $ (Leaf ATrue, [(Leaf (Symbol "foo"), Leaf (Int 1))])
+      actual = evaluate ([Procedure [Leaf (Symbol "<"), Leaf (Symbol "foo"), Leaf (Int 3)]], [(Leaf (Symbol "foo"), Leaf (Int 1))])

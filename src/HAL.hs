@@ -31,7 +31,7 @@ evaluateProcedure name args = case name of
     "cdr" -> run (Evaluator cdr name $ Expected 1) args
     "eq?" -> run (Evaluator eq name $ Expected 2) args
     ">" -> run (Evaluator (HAL.compare (>)) name $ Expected 2) args
-    "<" -> run (Evaluator (HAL.compare (>)) name $ Expected 2) args
+    "<" -> run (Evaluator (HAL.compare (<)) name $ Expected 2) args
     _ -> evaluateMathematicalProcedure name args
 
 evaluateMathematicalProcedure :: String -> EvaluatorFunction Expr
@@ -133,7 +133,7 @@ operate func args = do
             Nothing ->  Left "Operation: Division by Zero"
             Just res -> Right (Leaf (Int res), env)
         [a] -> Left "Operation: Invalid argument count"
-        x -> Left ("Operation: " ++ show x ++ "Invalid argument type")
+        x -> Left ("Operation: " ++ show x ++ " Invalid argument type")
 
 compare :: (Integer -> Integer -> Bool) -> EvaluatorFunction Expr
 compare func args = do
@@ -141,4 +141,4 @@ compare func args = do
     case args1 of
         [Leaf (Int a), Leaf (Int b)] -> if func a b then Right (Leaf ATrue, env)
                                         else Right (Leaf AFalse, env)
-        x ->  Left ("Operation: " ++ show x ++ "Invalid argument type")
+        x ->  Left ("Operation: '" ++ show (head x) ++ "' Invalid argument type")
