@@ -30,7 +30,11 @@ evaluateProcedure name args = case name of
     "car" -> run (Evaluator car name $ Expected 1) args
     "cdr" -> run (Evaluator cdr name $ Expected 1) args
     "eq?" -> run (Evaluator eq name $ Expected 2) args
-    "+" -> run (Evaluator add name Illimited) args
+    "+" -> run (Evaluator (operate addHAL) name Illimited) args
+    "-" -> run (Evaluator (operate subHAL) name Illimited) args
+    "*" -> run (Evaluator (operate mulHAL) name Illimited) args
+    "%" -> run (Evaluator (operate modHAL) name $ Expected 2) args
+    "/" -> run (Evaluator (operate divHAL) name $ Expected 2) args
     _ -> Left $ name ++ ": Not implemented"
 
 evaluateAll :: (Args, Env) -> Either ErrorMessage ([Expr], Env)
@@ -94,13 +98,33 @@ eq args = do
                                else Right (Leaf AFalse, env)
         _-> Right (Leaf AFalse, env)
 
-add :: EvaluatorFunction Expr
-add args = do
+addHAL :: Integer -> Integer -> Maybe Integer
+addHAL a b = Just (a + b)
+
+subHAL :: Integer -> Integer -> Maybe Integer
+subHAL a b = Just (a - b)
+
+mulHAL :: Integer -> Integer -> Maybe Integer
+mulHAL a b = Just (a * b)
+
+modHAL :: Integer -> Integer -> Maybe Integer
+modHAL a 0 = Nothing
+modHAL a b = Just (mod a b)
+
+divHAL :: Integer -> Integer -> Maybe Integer
+divHAL a 0 = Nothing
+divHAL a b = Just (div a b)
+
+operate :: (Integer -> Integer -> Maybe Integer) -> EvaluatorFunction Expr
+operate func args = do
     (args1, env) <- evaluateAll args
     case args1 of
         ((Leaf (Int a)) : (Leaf (Int b)): (Leaf (Int c)) : _) -> do
-            case add (tail args1, env) of
-                Right (Leaf (Int res), env) -> return (Leaf $ Int (res + a), env)
+            case operate func (tail args1, env) of
+                Right (Leaf (Int res), env) -> operate func ([Leaf $ Int a, Leaf $ Int res], env)
                 s -> Left (show s)
-        ((Leaf (Int a)) : (Leaf (Int b)): _) -> Right (Leaf (Int (a + b)), env)
-        x -> Left ("+: " ++ show x ++ "Invalid argument type")
+        ((Leaf (Int a)) : (Leaf (Int b)): _) -> case func a b of
+            Nothing ->  Left "Operation: Division by Zero"
+            Just res -> Right (Leaf (Int res), env)
+        [a] -> Left "Operation: Invalid argument count"
+        x -> Left ("Operation: " ++ show x ++ "Invalid argument type")

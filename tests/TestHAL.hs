@@ -157,3 +157,21 @@ case_HALEq_EmptyLists =  assertEqual "" expected actual
     where 
       expected = Right (Leaf $ ATrue, []) 
       actual = eq ([Procedure [Leaf $ Symbol "quote", Leaf $ Symbol "()"] , Procedure [Leaf $ Symbol "quote", Leaf $ Symbol "()"]], [])
+
+case_HALOperation_DivByZero :: Assertion 
+case_HALOperation_DivByZero = assertEqual "" expected actual
+    where
+      expected = Left "Operation: Division by Zero"
+      actual = evaluate ([Procedure [Leaf $ Symbol "/", Leaf (Int 2), Procedure [Leaf $ Symbol "-", Leaf (Int 4), Leaf (Int 4)]]], [])
+
+case_HALOperation_MultipleArgs :: Assertion 
+case_HALOperation_MultipleArgs = assertEqual "" expected actual
+    where
+      expected = Right $ (Leaf (Int 36), [])
+      actual = evaluate ([Procedure [Leaf $ Symbol "*", Leaf (Int 2), Leaf (Int 3), Leaf (Int 6)]], [])
+
+case_HALOperation_Negative :: Assertion 
+case_HALOperation_Negative = assertEqual "" expected actual
+    where
+      expected = Right $ (Leaf (Int (-120)), [])
+      actual = evaluate ([Procedure [Leaf (Symbol "+"), Leaf (Int 0), Leaf (Int (- 150)), Leaf (Int 30)]], [])

@@ -76,5 +76,9 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHAL: case_HALEq_Ex2" TestHAL.case_HALEq_Ex2,
         testCase "TestHAL: case_HALEq_UsingDefine" TestHAL.case_HALEq_UsingDefine,
         testCase "TestHAL: case_HALEq_DifferentStrings" TestHAL.case_HALEq_DifferentStrings,
-        testCase "TestHAL: case_HALEq_EmptyLists" TestHAL.case_HALEq_EmptyLists
+        testCase "TestHAL: case_HALEq_EmptyLists" TestHAL.case_HALEq_EmptyLists,
+
+        testCase "TestHAL: case_HALOperation_DivByZero" TestHAL.case_HALOperation_DivByZero,
+        testCase "TestHAL: case_HALOperation_MultipleArgs" TestHAL.case_HALOperation_MultipleArgs,
+        testCase "TestHAL: case_HALOperation_Negative" TestHAL.case_HALOperation_Negative
     ]
