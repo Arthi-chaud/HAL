@@ -14,6 +14,7 @@ all:		$(NAME)
 
 $(NAME):
 			stack build --allow-different-user
+			stack path --local-install-root
 			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 
 
