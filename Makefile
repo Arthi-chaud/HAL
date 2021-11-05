@@ -13,7 +13,7 @@ BUILD_FOLDER := $(shell stack path --local-install-root)/bin
 all:		$(NAME)
 
 $(NAME):
-			stack build
+			stack build --allow-different-user
 			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 
 
