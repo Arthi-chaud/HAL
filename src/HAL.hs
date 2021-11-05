@@ -30,6 +30,12 @@ evaluateProcedure name args = case name of
     "car" -> run (Evaluator car name $ Expected 1) args
     "cdr" -> run (Evaluator cdr name $ Expected 1) args
     "eq?" -> run (Evaluator eq name $ Expected 2) args
+    ">" -> run (Evaluator (HAL.compare (>)) name $ Expected 2) args
+    "<" -> run (Evaluator (HAL.compare (>)) name $ Expected 2) args
+    _ -> evaluateMathematicalProcedure name args
+
+evaluateMathematicalProcedure :: String -> EvaluatorFunction Expr
+evaluateMathematicalProcedure name args = case name of
     "+" -> run (Evaluator (operate addHAL) name Illimited) args
     "-" -> run (Evaluator (operate subHAL) name Illimited) args
     "*" -> run (Evaluator (operate mulHAL) name Illimited) args
@@ -128,3 +134,11 @@ operate func args = do
             Just res -> Right (Leaf (Int res), env)
         [a] -> Left "Operation: Invalid argument count"
         x -> Left ("Operation: " ++ show x ++ "Invalid argument type")
+
+compare :: (Integer -> Integer -> Bool) -> EvaluatorFunction Expr
+compare func args = do
+    (args1, env) <- evaluateAll args
+    case args1 of
+        [Leaf (Int a), Leaf (Int b)] -> if func a b then Right (Leaf ATrue, env)
+                                        else Right (Leaf AFalse, env)
+        x ->  Left ("Operation: " ++ show x ++ "Invalid argument type")
