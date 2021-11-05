@@ -43,11 +43,13 @@ cons expr = case evaluateAll expr of
 
 quote :: EvaluatorFunction Expr 
 quote (args, env) = case head args of
-    Procedure (Leaf (Symbol "quote") : rest) -> do
-        (res, env) <- run (Evaluator quote "quote" $ Expected 1) (rest, env)
-        return (Leaf (Symbol ('\'' : show res)), env)
+    Procedure (Leaf (Symbol "quote") : rest) ->
+        run quoteOnQuote (rest, env)
     Procedure x -> Right (List x, env)
     x -> return (x, env)
+    where
+        quoteToSymbol = \res -> Leaf (Symbol ('\'' : show res))
+        quoteOnQuote = quoteToSymbol <$> Evaluator quote "quote" (Expected 1)
 
 car :: EvaluatorFunction Expr 
 car args =  do
