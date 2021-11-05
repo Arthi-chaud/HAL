@@ -10,6 +10,7 @@ module HAL where
 import Evaluator
 import HALData
 import HALParser
+import Evaluator (Evaluator(Evaluator))
 
 evaluate :: EvaluatorFunction Expr
 evaluate ([expr], env) = case expr of
@@ -28,12 +29,13 @@ evaluateProcedure name args = case name of
     "cons" -> run (Evaluator cons name $ Expected 2) args
     "car" -> run (Evaluator car name $ Expected 1) args
     "cdr" -> run (Evaluator cdr name $ Expected 1) args
+    "eq?" -> run (Evaluator eq name $ Expected 2) args
     _ -> Left $ name ++ ": Not implemented"
 
 evaluateAll :: (Args, Env) -> Either ErrorMessage ([Expr], Env)
 evaluateAll ([], env) = Right ([], env)
 evaluateAll (first:rest, env) = do
-    (evaluated, env2) <- evaluate ([first], env)
+    (evaluated, env2) <- HAL.evaluate ([first], env)
     (evaluatedRest, env3) <- evaluateAll (rest, env2)
     return (evaluated : evaluatedRest, env3)
 
@@ -82,3 +84,11 @@ define (args, env) = case args of
         (Leaf (Symbol aname) : arest) -> Right (Leaf (Symbol aname), (Procedure a , Procedure b) : env)
         [err] -> Left ("define: '" ++ show err ++ "' Invalid argument type")
     [err] -> Left ("define: '" ++ show err ++ "' Invalid argument type")
+
+eq :: EvaluatorFunction Expr
+eq args = do
+    (args1, env) <- evaluateAll args
+    case args1 of
+        (Leaf x: Leaf y: _) -> if x == y then Right (Leaf ATrue, env)
+                               else Right (Leaf AFalse, env)
+        _-> Right (Leaf AFalse, env)
