@@ -67,5 +67,8 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHAL: case_HALCdr_List" TestHAL.case_HALCdr_List,  
         testCase "TestHAL: case_HALCdr_EmptyList" TestHAL.case_HALCdr_EmptyList, 
         testCase "TestHAL: case_HALCdr_Int" TestHAL.case_HALCdr_Int,
-        testCase "TestHAL: case_HALCdr_NestedList" TestHAL.case_HALCdr_NestedList
+        testCase "TestHAL: case_HALCdr_NestedList" TestHAL.case_HALCdr_NestedList,
+
+        testCase "TestHAL: case_HALDefine_Ex1" TestHAL.case_HALDefine_Ex1,
+        testCase "TestHAL: case_HALDefine_Ex2" TestHAL.case_HALDefine_Ex2
     ]

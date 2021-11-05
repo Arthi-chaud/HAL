@@ -114,3 +114,16 @@ case_HALCdr_NestedList =  assertEqual "Example 1" expected actual
     where 
       expected = Right $ (List [Leaf $ Int  4, Leaf $ Int  5, Leaf $ Int  6], [])
       actual = cdr ([List [List [Leaf $ Int  1, Leaf $ Int  2, Leaf $ Int  3], List [Leaf $ Int  4, Leaf $ Int  5, Leaf $ Int  6]]], [])
+
+case_HALDefine_Ex1 :: Assertion
+case_HALDefine_Ex1 =  assertEqual "Example 1" expected actual
+    where 
+      expected = Right (Leaf (Symbol "foo"), [(Leaf (Symbol "foo"), Leaf (Int 2))])
+      actual = define ([Leaf (Symbol "foo"), Leaf (Int 2)], [])
+
+case_HALDefine_Ex2 :: Assertion
+case_HALDefine_Ex2 =  assertEqual "Example 1" expected actual
+    where 
+      expected = Right (Leaf (Symbol "add"), [(Leaf (Symbol "add"), lambda)])
+      actual = define ([Leaf (Symbol "add"), lambda], [])
+      lambda = Procedure [Leaf $ Symbol "lambda", List [Leaf $ Symbol "a", Leaf $ Symbol "b"], Procedure [Leaf $ Symbol "+", Leaf $ Symbol "a", Leaf $ Symbol "b"]]
