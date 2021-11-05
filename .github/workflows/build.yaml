@@ -18,5 +18,7 @@ jobs:
         name: Install Stack
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      - name: Permissions bug workaround
+        run: "chown -R $(id -un):$(id -gn) ~"
       - name: Compile Project
         run: make
