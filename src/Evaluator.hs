@@ -42,40 +42,39 @@ run eval (args, env)
 
 
 instance Functor Evaluator where
-    fmap fct evaluator = Evaluator
-        (\params -> do
+    fmap fct evaluator = evaluator {function =
+            \params -> do
             (res, env) <- run evaluator params
-            return (fct res, env))
-        (name evaluator)
-        (requiredArg evaluator)
+            return (fct res, env)
+    }
 
 instance Applicative Evaluator where
     pure a = Evaluator (\(_, env) -> Right (a, env)) "" Illimited
     
-    (<*>) fp p = Evaluator (\(args, env) -> do
+    (<*>) fp p = p {function = \(args, env) -> do
         (res, env2) <- run fp (args, env)
         run (res <$> p) (args, env)
-        ) (name p) (requiredArg p)
+        }
 
 instance Alternative Evaluator where
     empty = Evaluator (\s -> Left "Empty") "" Illimited
 
-    (<|>) p1 p2 = Evaluator (\s ->
+    (<|>) p1 p2 = p1 {function = \s ->
         case run p1 s of
             Left _ -> run p2 s
             res -> res
-        ) (name p1 ++ "|" ++ name p2) (requiredArg p1)
+        , name = name p1 ++ "|" ++ name p2 }
 
 (<&>) :: Evaluator Expr -> Evaluator Expr -> Evaluator (Expr, Expr)
-(<&>) p1 p2 = Evaluator (\(args, env1) -> do
+(<&>) p1 p2 = p1 {function = \(args, env1) -> do
             (res, env2) <- run p1 (args, env1)
             (res1, env3) <- run p2 (args, env2)
             Right ((res, res1), env3)
-            ) (name p1 ++ " & " ++ name p2) (requiredArg p1)
+            , name = name p1 ++ " & " ++ name p2 }
 
 (<%>) :: Evaluator Expr -> Evaluator Expr -> Evaluator Expr
-p1 <%> p2 = Evaluator (\(args, env) -> do
+p1 <%> p2 = p1 {function = \(args, env) -> do
             (res1, env1) <- run p1 (args, env)
             (res2, env2) <- run p2 ([res1], env1)
             Right (res2, env2)
-            ) (name p1 ++ " % " ++ name p2) (requiredArg p1)
+            , name = name p1 ++ " % " ++ name p2}
