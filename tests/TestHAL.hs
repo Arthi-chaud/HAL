@@ -185,17 +185,36 @@ case_HALComparison = assertEqual "" expected actual
 case_HALComparison2 :: Assertion 
 case_HALComparison2 = assertEqual "" expected actual
     where
-      expected = Right $ (Leaf AFalse, [])
-      actual = evaluate ([Procedure [Leaf (Symbol "<"), Leaf (Int 0), Leaf (Int (- 150))]], [])
+      expected = Right (Leaf AFalse, [])
+      actual = HAL.evaluate ([Procedure [Leaf (Symbol "<"), Leaf (Int 0), Leaf (Int (- 150))]], [])
 
 case_HALComparisonWrongType :: Assertion 
 case_HALComparisonWrongType = assertEqual "" expected actual
     where
-      expected = Left $ "Operation: '12' Invalid argument type"
-      actual = evaluate ([Procedure [Leaf (Symbol "<"), Procedure [Leaf $ Symbol "quote", Leaf (Symbol "12")], Leaf (ATrue )]], [])
+      expected = Left "Operation: '12' Invalid argument type"
+      actual = HAL.evaluate ([Procedure [Leaf (Symbol "<"), Procedure [Leaf $ Symbol "quote", Leaf (Symbol "12")], Leaf (ATrue )]], [])
 
 case_HALComparisonDefineValue :: Assertion 
 case_HALComparisonDefineValue = assertEqual "" expected actual
     where
-      expected = Right $ (Leaf ATrue, [(Leaf (Symbol "foo"), Leaf (Int 1))])
-      actual = evaluate ([Procedure [Leaf (Symbol "<"), Leaf (Symbol "foo"), Leaf (Int 3)]], [(Leaf (Symbol "foo"), Leaf (Int 1))])
+      expected = Right (Leaf ATrue, [(Leaf (Symbol "foo"), Leaf (Int 1))])
+      actual = HAL.evaluate ([Procedure [Leaf (Symbol "<"), Leaf (Symbol "foo"), Leaf (Int 3)]], [(Leaf (Symbol "foo"), Leaf (Int 1))])
+
+
+case_HALAtomEx1 :: Assertion 
+case_HALAtomEx1 = assertEqual "" expected actual
+    where
+      expected = Right (Leaf ATrue, [])
+      actual = HAL.evaluate ([Procedure [Leaf (Symbol "atom?"), Procedure [Leaf (Symbol "quote"), Leaf (Symbol "foo")]]], [])
+
+case_HALAtomEx2 :: Assertion 
+case_HALAtomEx2 = assertEqual "" expected actual
+    where
+      expected = Right (Leaf AFalse , [])
+      actual = HAL.evaluate ([Procedure [Leaf (Symbol "atom?"), Procedure [Leaf (Symbol "quote"), Procedure [Leaf $ Symbol "1",  Leaf $ Symbol "2",  Leaf $ Symbol "3"]]]], [])
+
+case_HALAtomEx3 :: Assertion 
+case_HALAtomEx3 = assertEqual "" expected actual
+    where
+      expected = Right (Leaf ATrue, [])
+      actual = HAL.evaluate ([Procedure [Leaf (Symbol "atom?"), Procedure [Leaf (Symbol "quote"), Leaf (Symbol "()")]]], [])

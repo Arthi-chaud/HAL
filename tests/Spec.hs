@@ -84,5 +84,9 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHAL: case_HALComparison" TestHAL.case_HALComparison,
         testCase "TestHAL: case_HALComparison2" TestHAL.case_HALComparison2,
         testCase "TestHAL: case_HALComparisonWrongType" TestHAL.case_HALComparisonWrongType,
-        testCase "TestHAL: case_HALComparisonDefineValue" TestHAL.case_HALComparisonDefineValue
+        testCase "TestHAL: case_HALComparisonDefineValue" TestHAL.case_HALComparisonDefineValue,
+
+        testCase "TestHAL: case_HALAtomEx1" TestHAL.case_HALAtomEx1,
+        testCase "TestHAL: case_HALAtomEx2" TestHAL.case_HALAtomEx2,
+        testCase "TestHAL: case_HALAtomEx3" TestHAL.case_HALAtomEx3
     ]

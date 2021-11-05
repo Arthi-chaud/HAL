@@ -30,6 +30,7 @@ evaluateProcedure name args = case name of
     "car" -> run (Evaluator car name $ Expected 1) args
     "cdr" -> run (Evaluator cdr name $ Expected 1) args
     "eq?" -> run (Evaluator eq name $ Expected 2) args
+    "atom?" -> run (Evaluator atom name $ Expected 1) args
     ">" -> run (Evaluator (HAL.compare (>)) name $ Expected 2) args
     "<" -> run (Evaluator (HAL.compare (<)) name $ Expected 2) args
     _ -> evaluateMathematicalProcedure name args
@@ -142,3 +143,10 @@ compare func args = do
         [Leaf (Int a), Leaf (Int b)] -> if func a b then Right (Leaf ATrue, env)
                                         else Right (Leaf AFalse, env)
         x ->  Left ("Operation: '" ++ show (head x) ++ "' Invalid argument type")
+
+atom :: EvaluatorFunction Expr
+atom args = do
+    (args1, env) <- evaluateAll args
+    case head args1 of
+        Leaf x -> Right (Leaf ATrue, env)
+        _ -> Right (Leaf AFalse, env)
