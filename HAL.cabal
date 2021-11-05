@@ -26,11 +26,10 @@ source-repository head
 library
   exposed-modules:
       AdvancedParser
-      Evalutator
+      Evaluator
       FileManager
       HAL
       HALData
-      HALError
       HALParser
   other-modules:
       Paths_HAL

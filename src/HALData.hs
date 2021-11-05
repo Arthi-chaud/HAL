@@ -23,7 +23,7 @@ instance Eq Atom where
 instance Eq Expr where
     (==) (Leaf a) (Leaf b) = a == b
     (==) (Procedure a) (Procedure b) = a == b
-    (==) (List [Leaf Nil]) (List [Leaf Nil]) = True
+    (==) (List a) (List b) = a == b
     (==) _ _ = False
 
 instance Show Atom where

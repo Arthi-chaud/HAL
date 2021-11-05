@@ -7,72 +7,59 @@
 
 module HAL where
 
+import Evaluator
 import HALData
-import HALError
 import HALParser
 
-type Env = [(Expr, Expr)]
-
-evaluate :: Expr -> MaybeExpr
-evaluate expr = case expr of
-    Leaf x -> Right $ Leaf x
-    List x -> Right $ List x
-    Procedure (Leaf (Symbol name):args) -> evaluateProcedure name args
+evaluate :: EvaluatorFunction Expr
+evaluate ([expr], env) = case expr of
+    Leaf x -> Right (Leaf x, env)
+    List x -> Right (List x, env)
+    Procedure (Leaf (Symbol name):args) -> evaluateProcedure name (args, env)
     _ -> Left "Not implemented yet"
 
-evaluateProcedure :: String -> [Expr] -> MaybeExpr
+evaluateProcedure :: String -> EvaluatorFunction Expr
 evaluateProcedure name args = case name of
-    "quote" -> quote args
-    "cons" -> cons args
-    "car" -> car args
-    "cdr" -> cdr args
-    _ -> Left $ "Not implemented: " ++ name
+    "quote" -> run (Evaluator quote name $ Expected 1) args
+    "cons" -> run (Evaluator cons name $ Expected 2) args
+    "car" -> run (Evaluator car name $ Expected 1) args
+    "cdr" -> run (Evaluator cdr name $ Expected 1) args
+    _ -> Left $ name ++ ": Not implemented"
 
-evaluateAll :: [Expr] -> Either ErrorMessage [Expr]
-evaluateAll [] = Right []
-evaluateAll list = mapM evaluate list
+evaluateAll :: (Args, Env) -> Either ErrorMessage ([Expr], Env)
+evaluateAll ([], env) = Right ([], env)
+evaluateAll (first:rest, env) = do
+    (evaluated, env2) <- evaluate ([first], env)
+    (evaluatedRest, env3) <- evaluateAll (rest, env2)
+    return (evaluated : evaluatedRest, env3)
 
-checkParamCount :: Int -> [Expr] -> Either ErrorMessage [Expr]
-checkParamCount nb list = if length list == nb then Right (take nb list)
-                          else Left "Invalid argument count"
-
-cons :: [Expr] -> MaybeExpr 
+cons :: EvaluatorFunction Expr 
 cons expr = case evaluateAll expr of
+    Right (args1:args2:_, env) -> case args2 of
+        List x -> Right (List (args1 : x), env)
+        Procedure x -> Left $ show args2
+        x -> Right (List (args1 : [args2]), env)
     Left message -> Left message
-    Right args -> case checkParamCount 2 args of
-        Right (args1:args2:_) -> case args2 of
-            List x -> Right $ List (args1 : x)
-            Procedure x -> Left $ show args2
-            x -> Right $ List (args1 : [args2])
-        Left msg -> Left ("cons: " ++ msg)
-        _ -> Left "error"
 
-quote :: [Expr] -> MaybeExpr
-quote args = case checkParamCount 1 args of
-        Left msg -> Left ("quote: " ++ msg)
-        Right (args1:_) -> case args1 of
-            Procedure (Leaf (Symbol "quote") : rest) -> case quote rest of
-                Left msg -> Left msg
-                Right res -> Right $ Leaf (Symbol ('\'' : show res))
-            Procedure x -> Right $ List x
-            x -> Right x
-        _ -> Left "error"
+quote :: EvaluatorFunction Expr 
+quote (args, env) = case head args of
+    Procedure (Leaf (Symbol "quote") : rest) -> do
+        (res, env) <- run (Evaluator quote "quote" $ Expected 1) (rest, env)
+        return (Leaf (Symbol ('\'' : show res)), env)
+    Procedure x -> Right (List x, env)
+    x -> return (x, env)
 
-car :: [Expr] -> MaybeExpr
-car args =  case evaluateAll args of
-    Left message -> Left message
-    Right args -> case checkParamCount 1 args of
-        Left msg -> Left ("car: " ++ msg)
-        Right args1 -> case args1 of
-            [List (a:b)] -> Right a
-            _ -> Left "car: Invalid argument type"
+car :: EvaluatorFunction Expr 
+car args =  do
+    (args1, env) <- evaluateAll args
+    case args1 of
+        [List (a:b)] -> Right (a, env)
+        _ -> Left "car: Invalid argument type"
 
-cdr :: [Expr] -> MaybeExpr
-cdr args =  case evaluateAll args of
-    Left message -> Left message
-    Right args -> case checkParamCount 1 args of
-        Left msg -> Left ("cdr: " ++ msg)
-        Right args1 -> case args1 of
-            [List (a:b:c)] -> Right b
-            [List (a:_)] -> Right $ Leaf Nil
-            _ -> Left "cdr: Invalid argument type"
+cdr :: EvaluatorFunction Expr
+cdr args =  do
+    (args1, env) <- evaluateAll args
+    case args1 of
+        [List (a:b:c)] -> Right (b, env)
+        [List (a:_)] -> Right (Leaf Nil, env)
+        _ -> Left "cdr: Invalid argument type"

@@ -7,17 +7,24 @@
 
 module Evaluator where
 
-import HAL
 import HALData
 import Data.List
-import HALError
 import Data.Maybe (isNothing)
 
 import Control.Applicative ( Alternative((<|>), empty), some )
 
+type ErrorMessage = String
+
+type Env = [(Expr, Expr)]
+
 type Args = [Expr]
 
-type ArgumentCount = Maybe Int
+data ArgumentCount = Expected Int | Illimited
+
+instance Eq ArgumentCount where
+    (==) (Expected a) (Expected b) = a == b
+    (==) Illimited Illimited = True
+    (==) _ _ = False 
 
 type EvaluatorFunction a = (Args, Env) -> Either ErrorMessage (a, Env)
 
@@ -29,8 +36,8 @@ data Evaluator a = Evaluator {
 
 run :: Evaluator a -> EvaluatorFunction a
 run eval (args, env)
-    | isNothing $ requiredArg eval = function eval (args, env)
-    | requiredArg eval == Just (length args) = function eval (args, env)
+    | requiredArg eval == Expected (length args) = function eval (args, env)
+    | requiredArg eval == Illimited = function eval (args, env)
     | otherwise = Left $ name eval ++ ": Invalid argument count"
 
 
@@ -43,7 +50,7 @@ instance Functor Evaluator where
         (requiredArg evaluator)
 
 instance Applicative Evaluator where
-    pure a = Evaluator (\(_, env) -> Right (a, env)) "" Nothing
+    pure a = Evaluator (\(_, env) -> Right (a, env)) "" Illimited
     
     (<*>) fp p = Evaluator (\(args, env) -> do
         (res, env2) <- run fp (args, env)
@@ -51,7 +58,7 @@ instance Applicative Evaluator where
         ) (name p) (requiredArg p)
 
 instance Alternative Evaluator where
-    empty = Evaluator (\s -> Left "Empty") "" Nothing
+    empty = Evaluator (\s -> Left "Empty") "" Illimited
 
     (<|>) p1 p2 = Evaluator (\s ->
         case run p1 s of
