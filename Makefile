@@ -11,7 +11,7 @@ all:		$(NAME)
 
 $(NAME):
 			stack build --allow-different-user
-			cp $(shell stack path --local-install-root)/bin/HAL ./$(NAME)
+			cp $(shell find .stack-work | grep '/bin/HAL') ./$(NAME)
 
 
 clean:
