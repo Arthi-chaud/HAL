@@ -70,13 +70,13 @@ case_HALCar_List =  assertEqual "Example 1" expected actual
 case_HALCar_EmptyList :: Assertion
 case_HALCar_EmptyList =  assertEqual "Example 1" expected actual
     where 
-      expected = Left "car: Invalid argument type"
+      expected = Left "car: 'Nil' Invalid argument type"
       actual = car ([Procedure [Leaf $ Symbol "quote", Leaf Nil]], [])
 
 case_HALCar_Int :: Assertion
 case_HALCar_Int =  assertEqual "Example 1" expected actual
     where 
-      expected = Left "car: Invalid argument type"
+      expected = Left "car: '1' Invalid argument type"
       actual = car ([Leaf $ Int 1], [])
 
 case_HALCar_NestedList :: Assertion
@@ -100,13 +100,13 @@ case_HALCdr_OneElemList =  assertEqual "Example 1" expected actual
 case_HALCdr_EmptyList :: Assertion
 case_HALCdr_EmptyList =  assertEqual "Example 1" expected actual
     where 
-      expected = Left "cdr: Invalid argument type"
+      expected = Left "cdr: 'Nil' Invalid argument type"
       actual = cdr ([Procedure [Leaf $ Symbol "quote", Leaf Nil]], [])
 
 case_HALCdr_Int :: Assertion
 case_HALCdr_Int =  assertEqual "Example 1" expected actual
     where 
-      expected = Left "cdr: Invalid argument type"
+      expected = Left "cdr: '1' Invalid argument type"
       actual = cdr ([Leaf $ Int 1], [])
 
 case_HALCdr_NestedList :: Assertion

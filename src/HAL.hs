@@ -13,13 +13,17 @@ import HALParser
 
 evaluate :: EvaluatorFunction Expr
 evaluate ([expr], env) = case expr of
-    Leaf x -> Right (Leaf x, env)
+    Leaf (Symbol x) -> do
+        defined <- getDefine (Leaf $ Symbol x) env
+        return (defined, env)
+    Leaf x -> Right $ (Leaf x, env)
     List x -> Right (List x, env)
     Procedure (Leaf (Symbol name):args) -> evaluateProcedure name (args, env)
     _ -> Left "Not implemented yet"
 
 evaluateProcedure :: String -> EvaluatorFunction Expr
 evaluateProcedure name args = case name of
+    "define" -> run (Evaluator define name $ Expected 2) args
     "quote" -> run (Evaluator quote name $ Expected 1) args
     "cons" -> run (Evaluator cons name $ Expected 2) args
     "car" -> run (Evaluator car name $ Expected 1) args
@@ -56,7 +60,7 @@ car args =  do
     (args1, env) <- evaluateAll args
     case args1 of
         [List (a:b)] -> Right (a, env)
-        _ -> Left "car: Invalid argument type"
+        [err] -> Left ("car: '" ++ show err ++ "' Invalid argument type")
 
 cdr :: EvaluatorFunction Expr
 cdr args =  do
@@ -64,4 +68,17 @@ cdr args =  do
     case args1 of
         [List (a:b:c)] -> Right (b, env)
         [List (a:_)] -> Right (Leaf Nil, env)
-        _ -> Left "cdr: Invalid argument type"
+        [err] -> Left ("cdr: '" ++ show err ++ "' Invalid argument type")
+
+getDefine :: Expr -> Env -> Either ErrorMessage Expr 
+getDefine key env = case filter ((==key).fst) env of
+    [] -> Left (show key ++ ": Undefined")
+    (a:_) -> Right (snd a)
+
+define :: EvaluatorFunction Expr
+define (args, env) = case args of
+    (Leaf (Symbol name) : x : _) -> Right (Leaf (Symbol name), (Leaf $ Symbol name, x) : env)
+    (Procedure a: Procedure b :_) -> case a of
+        (Leaf (Symbol aname) : arest) -> Right (Leaf (Symbol aname), (Procedure a , Procedure b) : env)
+        [err] -> Left ("define: '" ++ show err ++ "' Invalid argument type")
+    [err] -> Left ("define: '" ++ show err ++ "' Invalid argument type")
