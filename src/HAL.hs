@@ -30,6 +30,7 @@ evaluateProcedure name args = case name of
     "car" -> run (Evaluator car name $ Expected 1) args
     "cdr" -> run (Evaluator cdr name $ Expected 1) args
     "eq?" -> run (Evaluator eq name $ Expected 2) args
+    "+" -> run (Evaluator add name Illimited) args
     _ -> Left $ name ++ ": Not implemented"
 
 evaluateAll :: (Args, Env) -> Either ErrorMessage ([Expr], Env)
@@ -92,3 +93,14 @@ eq args = do
         (Leaf x: Leaf y: _) -> if x == y then Right (Leaf ATrue, env)
                                else Right (Leaf AFalse, env)
         _-> Right (Leaf AFalse, env)
+
+add :: EvaluatorFunction Expr
+add args = do
+    (args1, env) <- evaluateAll args
+    case args1 of
+        ((Leaf (Int a)) : (Leaf (Int b)): (Leaf (Int c)) : _) -> do
+            case add (tail args1, env) of
+                Right (Leaf (Int res), env) -> return (Leaf $ Int (res + a), env)
+                s -> Left (show s)
+        ((Leaf (Int a)) : (Leaf (Int b)): _) -> Right (Leaf (Int (a + b)), env)
+        x -> Left ("+: " ++ show x ++ "Invalid argument type")
