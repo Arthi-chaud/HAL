@@ -11,7 +11,9 @@ jobs:
       - name: Install stack
         run: yes | curl -sSL https://get.haskellstack.org/ | sh
       - name: Update make
-        run: yes | apt-get make
+        run: |
+          yes | apt-get install make
+          yes | apt-get upgrade
       - name: Permissions bug workaround
         run: "chown -R $(id -un):$(id -gn) ~"
       - name: Compile Project
