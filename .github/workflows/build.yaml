@@ -15,4 +15,4 @@ jobs:
       - name: Permissions bug workaround
         run: "chown -R $(id -un):$(id -gn) ~"
       - name: Compile Project
-        run: make ; test $(find .stack-work/install -wholename "*/bin/HAL" | wc -l) = "1"
+        run: make
