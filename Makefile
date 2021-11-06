@@ -6,7 +6,7 @@
 ##
 
 NAME		=	hal
-
+SHELL := /bin/bash
 
 BUILD_FOLDER := $(shell stack --no-terminal path --local-install-root)/bin
 
