@@ -8,12 +8,12 @@
 NAME		=	hal
 
 
-BUILD_FOLDER := $(shell stack path --local-install-root)/bin
+BUILD_FOLDER := $(shell stack --no-terminal path --local-install-root)/bin
 
 all:		$(NAME)
 
 $(NAME):
-			
+			echo $(BUILD_FOLDER)	
 			stack build --allow-different-user
 			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 
