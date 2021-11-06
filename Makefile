@@ -13,8 +13,8 @@ BUILD_FOLDER := $(shell stack --no-terminal path --local-install-root)/bin
 all:		$(NAME)
 
 $(NAME):
-			find . 
 			stack build --allow-different-user
+			find . 
 ifeq ($(BUILD_FOLDER), /bin)	
 			mv $(find / -name "HAL") ./$(NAME)
 else
