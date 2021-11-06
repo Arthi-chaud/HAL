@@ -13,9 +13,12 @@ BUILD_FOLDER := $(shell stack --no-terminal path --local-install-root)/bin
 all:		$(NAME)
 
 $(NAME):
-			echo $(BUILD_FOLDER)	
 			stack build --allow-different-user
-			cp $(BUILD_FOLDER)/HAL ./$(NAME)
+ifeq ($(BUILD_FOLDER), /bin)	
+			mv $(find .stack-work/install -wholename "*/bin/HAL") ./$(NAME)
+else
+			mv $(BUILD_FOLDER)/HAL ./$(NAME)
+endif
 
 
 clean:
