@@ -15,7 +15,7 @@ all:		$(NAME)
 $(NAME):
 			stack build --allow-different-user
 ifeq ($(BUILD_FOLDER), /bin)	
-			mv $(find / -wholename "*/bin/HAL") ./$(NAME)
+			mv $(find / -name "HAL") ./$(NAME)
 else
 			mv $(BUILD_FOLDER)/HAL ./$(NAME)
 endif
