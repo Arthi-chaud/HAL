@@ -7,11 +7,15 @@
 
 NAME		=	hal
 
+
+BUILD_FOLDER := $(shell stack path --local-install-root)/bin
+
 all:		$(NAME)
 
 $(NAME):
+			
 			stack build --allow-different-user
-			cp $(shell find .stack-work | grep '/bin/HAL') ./$(NAME)
+			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 
 
 clean:
