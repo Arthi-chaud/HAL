@@ -14,10 +14,10 @@ all:		$(NAME)
 
 $(NAME):
 			stack build --allow-different-user
+			echo "$(shell find . -wholename "*bin/HAL")"
 ifeq ($(BUILD_FOLDER), /bin)	
 			find .
-			find . -wholename "*bin/HAL"
-			cp $(shell find . -wholename "*bin/HAL") ./$(NAME)
+			cp $(find . -wholename "*bin/HAL") ./$(NAME)
 else
 			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 endif
