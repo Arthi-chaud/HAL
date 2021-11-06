@@ -17,9 +17,9 @@ $(NAME):
 ifeq ($(BUILD_FOLDER), /bin)	
 			find .
 			find . -wholename "*bin/HAL"
-			mv $(shell find . -wholename "*bin/HAL") ./$(NAME)
+			cp $(shell find . -wholename "*bin/HAL") ./$(NAME)
 else
-			mv $(BUILD_FOLDER)/HAL ./$(NAME)
+			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 endif
 
 
