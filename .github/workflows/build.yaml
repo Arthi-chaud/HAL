@@ -12,6 +12,7 @@ jobs:
         run: yes | curl -sSL https://get.haskellstack.org/ | sh
       - name: Update make
         run: |
+          env
           yes | apt-get install make
           yes | apt-get upgrade
       - name: Permissions bug workaround
