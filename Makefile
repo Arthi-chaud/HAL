@@ -14,11 +14,8 @@ all:		$(NAME)
 
 $(NAME):
 			stack build --allow-different-user
-			find .
-			echo "ok"
-			find . -name "HAL"
 ifeq ($(BUILD_FOLDER), /bin)	
-			mv $(find / -name "HAL") ./$(NAME)
+			mv $(shell find . -wholename "*bin/HAL") ./$(NAME)
 else
 			mv $(BUILD_FOLDER)/HAL ./$(NAME)
 endif
