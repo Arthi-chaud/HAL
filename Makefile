@@ -6,18 +6,12 @@
 ##
 
 NAME		=	hal
-BUILD_FOLDER := $(shell stack --no-terminal path --local-install-root)/bin
+BUILD_FOLDER := $$(stack --no-terminal path --local-install-root)/bin
 
 all:		$(NAME)
 
 $(NAME):
-			stack build --allow-different-user
-ifeq ($(BUILD_FOLDER), /bin)	
-			cp $$(find . -wholename "*bin/HAL") ./$(NAME)
-else
 			cp $(BUILD_FOLDER)/HAL ./$(NAME)
-endif
-
 
 clean:
 			rm -f $(NAME)
