@@ -19,3 +19,4 @@ jobs:
         run: "chown -R $(id -un):$(id -gn) ~"
       - name: Compile Project
         run: make
+        shell: bash

@@ -6,13 +6,12 @@
 ##
 
 NAME		=	hal
-SHELL := /bin/bash
-
 BUILD_FOLDER := $(shell stack --no-terminal path --local-install-root)/bin
 
 all:		$(NAME)
 
 $(NAME):
+			echo $(SHELL)
 			stack build --allow-different-user
 ifeq ($(BUILD_FOLDER), /bin)	
 			find . -wholename "*bin/HAL"
