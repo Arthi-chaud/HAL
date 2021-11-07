@@ -11,11 +11,9 @@ BUILD_FOLDER := $(shell stack --no-terminal path --local-install-root)/bin
 all:		$(NAME)
 
 $(NAME):
-			echo $(SHELL)
 			stack build --allow-different-user
 ifeq ($(BUILD_FOLDER), /bin)	
-			find . -wholename "*bin/HAL"
-			cp $(shell find . -wholename "*bin/HAL") ./$(NAME)
+			cp $$(find . -wholename "*bin/HAL") ./$(NAME)
 else
 			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 endif
