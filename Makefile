@@ -12,7 +12,7 @@ all:		$(NAME)
 
 $(NAME):
 			stack build --allow-different-user
-			cp $$(find . -wholename "*bin/HAL") ./$(NAME)
+			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 
 
 clean:
