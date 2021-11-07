@@ -31,6 +31,7 @@ evaluateProcedure name args = case name of
     "cdr" -> run (Evaluator cdr name $ Expected 1) args
     "eq?" -> run (Evaluator eq name $ Expected 2) args
     "atom?" -> run (Evaluator atom name $ Expected 1) args
+    "cond" -> run (Evaluator cond name Illimited) args
     ">" -> run (Evaluator (HAL.compare (>)) name $ Expected 2) args
     "<" -> run (Evaluator (HAL.compare (<)) name $ Expected 2) args
     _ -> evaluateMathematicalProcedure name args
@@ -150,3 +151,18 @@ atom args = do
     case head args1 of
         Leaf x -> Right (Leaf ATrue, env)
         _ -> Right (Leaf AFalse, env)
+
+cond :: EvaluatorFunction Expr
+cond ([], _) = Left "cond: Invalid argument count"
+cond (args, env) = case args of
+    (Procedure a:Procedure b:x) -> case cond ([Procedure a], env) of
+        Right (Leaf ANothing, _) -> cond (Procedure b:x, env)
+        x -> x
+    [Procedure (c:r:_)] -> do
+        (res, env1) <- HAL.evaluate ([c], env)
+        case res of
+            Leaf ATrue -> HAL.evaluate ([r], env)
+            Leaf AFalse -> Right (Leaf ANothing, env1)
+            x ->  Left "cond: Invalid condition return type"
+    [Procedure (c:_)] -> Left "cond: Invalid argument type"
+    x -> Left $ "cond: " ++ show x ++ " Invalid argument type"

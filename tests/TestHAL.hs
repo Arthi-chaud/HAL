@@ -228,11 +228,24 @@ case_HALCond_NothingTrue = assertEqual "" expected actual
       actual = HAL.evaluate ([Procedure [Leaf (Symbol "cond"), expr]], [])
       expr = Procedure [Leaf AFalse, Leaf $ Int 1]
 
+case_HALCond_OneTrue :: Assertion 
+case_HALCond_OneTrue = assertEqual "" expected actual
+    where
+      expected = Right (Leaf $ Int 3, [])
+      actual = HAL.evaluate ([Procedure [Leaf (Symbol "cond"), expr]], [])
+      expr = Procedure [Leaf ATrue, Leaf $ Int 3]
+
 case_HALCond_NoParam :: Assertion 
 case_HALCond_NoParam = assertEqual "" expected actual
     where
       expected = Left "cond: Invalid argument count"
       actual = HAL.evaluate ([Procedure [Leaf (Symbol "cond")]], [])
+
+case_HALCond_InvalidParam :: Assertion 
+case_HALCond_InvalidParam = assertEqual "" expected actual
+    where
+      expected = Left "cond: [OK] Invalid argument type"
+      actual = HAL.evaluate ([Procedure [Leaf (Symbol "cond"), Leaf $ Symbol "OK"]], [])
 
 case_HALCond_Ex1 :: Assertion 
 case_HALCond_Ex1 = assertEqual "" expected actual

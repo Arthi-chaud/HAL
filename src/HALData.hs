@@ -18,6 +18,7 @@ instance Eq Atom where
     (==) Nil Nil = True
     (==) ATrue ATrue = True
     (==) AFalse AFalse = True
+    (==) ANothing ANothing = True
     (==) _  _ = False
 
 instance Eq Expr where

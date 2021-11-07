@@ -91,7 +91,9 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHAL: case_HALAtomEx3" TestHAL.case_HALAtomEx3,
 
         testCase "TestHAL: case_HALCond_NothingTrue" TestHAL.case_HALCond_NothingTrue,
+        testCase "TestHAL: case_HALCond_OneTrue" TestHAL.case_HALCond_OneTrue,
         testCase "TestHAL: case_HALCond_NoParam" TestHAL.case_HALCond_NoParam,
+        testCase "TestHAL: case_HALCond_InvalidParam" TestHAL.case_HALCond_InvalidParam,
         testCase "TestHAL: case_HALCond_Ex1" TestHAL.case_HALCond_Ex1,
         testCase "TestHAL: case_HALCond_Ex2" TestHAL.case_HALCond_Ex2
     ]
