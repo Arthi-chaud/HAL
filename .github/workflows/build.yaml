@@ -1,4 +1,4 @@
-name: Build & Functional Test
+name: Build
 on:
   push:
 
