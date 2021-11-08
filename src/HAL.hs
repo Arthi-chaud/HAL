@@ -60,6 +60,9 @@ evaluateProcedure name args = case name of
     _ -> evaluateMathematicalProcedure name args
 
 evaluateMathematicalProcedure :: String -> EvaluatorFunction Expr
+evaluateMathematicalProcedure "+" ([Leaf (Int a)], env) = Right (Leaf (Int a), env)
+evaluateMathematicalProcedure "-" ([Leaf (Int a)], env) = Right (Leaf (Int (a * (-1))), env)
+evaluateMathematicalProcedure "*" ([Leaf (Int a)], env) = Right (Leaf (Int a), env)
 evaluateMathematicalProcedure name args = case name of
     "+" -> run (Evaluator (operate addHAL) name Illimited) args
     "-" -> run (Evaluator (operate subHAL) name Illimited) args
@@ -97,8 +100,7 @@ cdr :: EvaluatorFunction Expr
 cdr args =  do
     (args1, env) <- evaluateAll args
     case args1 of
-        [List (a:b:c)] -> Right (b, env)
-        [List (a:_)] -> Right (Leaf Nil, env)
+        [List (a:b)] -> Right (List b, env)
         x -> Left ("cdr: '" ++ show (head x) ++ "' Invalid argument type")
 
 getDefine :: Expr -> Env -> Either ErrorMessage Expr 
@@ -137,16 +139,15 @@ modHAL a b = Just (mod a b)
 
 divHAL :: Integer -> Integer -> Maybe Integer
 divHAL a 0 = Nothing
-divHAL a b = Just (div a b)
+divHAL a b = Just (quot a b)
 
 operate :: (Integer -> Integer -> Maybe Integer) -> EvaluatorFunction Expr
 operate func args = do
     (args1, env) <- evaluateAll args
     case args1 of
-        ((Leaf (Int a)) : (Leaf (Int b)): (Leaf (Int c)) : _) -> do
-            case operate func (tail args1, env) of
-                Right (Leaf (Int res), env) -> operate func ([Leaf $ Int a, Leaf $ Int res], env)
-                s -> Left (show s)
+        ((Leaf (Int a)) : (Leaf (Int b)): (Leaf (Int c)) : _) -> case operate func (tail args1, env) of
+            Right (Leaf (Int res), env) -> operate func ([Leaf $ Int a, Leaf $ Int res], env)
+            s -> Left (show s)
         ((Leaf (Int a)) : (Leaf (Int b)): _) -> case func a b of
             Nothing ->  Left "Operation: Division by Zero"
             Just res -> Right (Leaf (Int res), env)

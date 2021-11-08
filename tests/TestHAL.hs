@@ -164,7 +164,15 @@ case_HALOperation_DivByZero :: Assertion
 case_HALOperation_DivByZero = assertEqual "" expected actual
     where
       expected = Left "Operation: Division by Zero"
-      actual = evaluate ([Procedure [Leaf $ Symbol "/", Leaf (Int 2), Procedure [Leaf $ Symbol "-", Leaf (Int 4), Leaf (Int 4)]]], [])
+      actual = evaluate ([Procedure [Leaf $ Symbol "div", Leaf (Int 2), Procedure [Leaf $ Symbol "-", Leaf (Int 4), Leaf (Int 4)]]], [])
+
+case_HALDiv_FromString :: Assertion 
+case_HALDiv_FromString = case runParser parseAllExpr "(div 4 2)" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right ([Leaf $ Int 2], [])
+        actual = HAL.evaluateAll (expr, [])
 
 case_HALOperation_MultipleArgs :: Assertion 
 case_HALOperation_MultipleArgs = assertEqual "" expected actual

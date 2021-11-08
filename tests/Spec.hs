@@ -82,6 +82,7 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHAL: case_HALOperation_DivByZero" TestHAL.case_HALOperation_DivByZero,
         testCase "TestHAL: case_HALOperation_MultipleArgs" TestHAL.case_HALOperation_MultipleArgs,
         testCase "TestHAL: case_HALOperation_Negative" TestHAL.case_HALOperation_Negative,
+        testCase "TestHAL: case_HALDiv_FromString" TestHAL.case_HALDiv_FromString,
         testCase "TestHAL: case_HALComparison" TestHAL.case_HALComparison,
         testCase "TestHAL: case_HALComparison2" TestHAL.case_HALComparison2,
         testCase "TestHAL: case_HALComparisonWrongType" TestHAL.case_HALComparisonWrongType,

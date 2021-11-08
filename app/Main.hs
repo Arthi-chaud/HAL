@@ -11,7 +11,7 @@ import System.Console.Haskeline
 import AdvancedParser
 import Data.Maybe
 import System.Exit
-
+import Evaluator
 import HALParser
 import HAL (evaluateAll)
 
@@ -34,20 +34,22 @@ mainFiles filesContent
         expressions = fst . fromJust <$> filter isJust expressionsMaybe
 
 
-loopREPL :: InputT IO ()
-loopREPL = do
+loopREPL :: Env -> InputT IO ()
+loopREPL env = do
     minput <- getInputLine "> "
     case minput of
         Nothing -> return ()
         Just "exit" -> return ()
-        Just input -> do
-            outputStrLn input
-            loopREPL
+        Just input -> case runParser parseAllExpr input of
+            Just (res, _) -> case HAL.evaluateAll (res, env) of
+                Left x -> outputStrLn x >> loopREPL env
+                Right (res1, env) -> outputStrLn (show (last res1)) >> loopREPL env
+            Nothing -> outputStrLn "Parsing Error" >> loopREPL env
 
 mainREPL :: [String] -> IO Int
 mainREPL filesContent = do
-        runInputT defaultSettings loopREPL
-        exitWith ExitSuccess
+        runInputT defaultSettings $ loopREPL []
+        exitSuccess
 
 main :: IO Int
 main = do
