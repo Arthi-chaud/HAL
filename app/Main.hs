@@ -9,8 +9,11 @@ module Main where
 import System.Environment
 import System.Console.Haskeline
 import AdvancedParser
+import Data.Maybe
 import System.Exit
 
+import HALParser
+import HAL (evaluateAll)
 
 type FilePath = String
 
@@ -18,8 +21,17 @@ getFilesContents :: [String] -> IO [String]
 getFilesContents list = sequence (readFile <$> list)
 
 mainFiles :: [String] -> IO Int
-mainFiles filesContent = do
-    exitWith ExitSuccess
+mainFiles filesContent
+    | errorExpression = exitWith $ ExitFailure 84
+    | otherwise = do
+    case evaluateAll (expressions, []) of
+        Left err -> putStrLn err >> exitWith (ExitFailure 84)
+        Right (a, env) -> print $ head a
+    exitSuccess
+    where
+        expressionsMaybe = runParser parseExpr <$> filesContent
+        errorExpression = any isNothing expressionsMaybe
+        expressions = fst . fromJust <$> filter isJust expressionsMaybe
 
 
 loopREPL :: InputT IO ()
