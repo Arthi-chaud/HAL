@@ -32,8 +32,8 @@ loopREPL = do
             outputStrLn input
             loopREPL
 
-mainREPL :: IO Int
-mainREPL = do
+mainREPL :: [String] -> IO Int
+mainREPL filesContent = do
         runInputT defaultSettings loopREPL
         exitWith ExitSuccess
 
@@ -44,6 +44,6 @@ main = do
     let argsNoFlags = filter (/= "-i") args
     filesContent <- getFilesContents argsNoFlags
     if repl then
-        mainREPL
+        mainREPL filesContent
     else
         mainFiles filesContent
