@@ -17,24 +17,33 @@ type FilePath = String
 getFilesContents :: [String] -> IO [String]
 getFilesContents list = sequence (readFile <$> list)
 
+mainFiles :: [String] -> IO Int
+mainFiles filesContent = do
+    exitWith ExitSuccess
+
+
+loopREPL :: InputT IO ()
+loopREPL = do
+    minput <- getInputLine "> "
+    case minput of
+        Nothing -> return ()
+        Just "exit" -> return ()
+        Just input -> do
+            outputStrLn input
+            loopREPL
+
+mainREPL :: IO Int
+mainREPL = do
+        runInputT defaultSettings loopREPL
+        exitWith ExitSuccess
+
 main :: IO Int
 main = do
     args <- getArgs
     let repl = "-i" `elem` args || null args
-    let args2 = filter (/= "-i") args
-    filesContent <- getFilesContents args2
+    let argsNoFlags = filter (/= "-i") args
+    filesContent <- getFilesContents argsNoFlags
     if repl then
-        runInputT defaultSettings loop
+        mainREPL
     else
-        return ()
-    exitWith (ExitSuccess)
-    where
-        loop :: InputT IO ()
-        loop = do
-            minput <- getInputLine "> "
-            case minput of
-                Nothing -> return ()
-                Just "exit" -> return ()
-                Just input -> do
-                    outputStrLn input
-                    loop
+        mainFiles filesContent
