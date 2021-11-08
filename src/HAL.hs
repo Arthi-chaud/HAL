@@ -10,6 +10,7 @@ module HAL where
 import Evaluator
 import HALData
 import HALParser
+import Data.List
 
 evaluate :: EvaluatorFunction Expr
 evaluate ([], _) = Left "Empty Expression"
@@ -21,6 +22,8 @@ evaluate (expr, env) = case head expr of
     List x -> Right (List x, env)
     Procedure (Leaf (Symbol name):args) -> evaluateProcedure name (args, env)
     x -> Left (show x ++ ": Not implemented yet")
+
+evaluateLamba :: EvaluatorFunction Expr
 
 evaluateProcedure :: String -> EvaluatorFunction Expr
 evaluateProcedure name args = case name of
@@ -166,3 +169,32 @@ cond (args, env) = case args of
             x ->  Left "cond: Invalid condition return type"
     [Procedure (c:_)] -> Left "cond: Invalid argument type"
     x -> Left $ "cond: " ++ show x ++ " Invalid argument type"
+
+lambda :: EvaluatorFunction Expr
+lambda args = do
+    (args1, env) <- evaluateAll args
+    case args1 of
+        (Procedure vars:Procedure body:_) -> if vars == nub vars
+            then case lambdaReplaceAllArgs vars body 0 of
+                Nothing -> Left "lambda: Invalid parameter type"
+                Just computedBody -> Right (Lambda (computedBody, length vars), env)
+            else Left "lambda: Duplicate in parameter list"
+        x -> Left "lambda: Invalid argument count"
+
+lambdaReplaceAllArgs :: [Expr] -> [Expr] -> Int -> Maybe [Expr]
+lambdaReplaceAllArgs [] _ _ = Just []
+lambdaReplaceAllArgs (arg:r) array index = do
+    newRest <- lambdaReplaceAllArgs r array (index + 1)
+    case arg of
+        Leaf (Symbol x) ->  Just (lambdaReplaceArgs x newRest index)
+        _ -> Nothing
+       
+
+lambdaReplaceArgs :: String -> [Expr] -> Int -> [Expr]
+lambdaReplaceArgs argName [] index = []
+lambdaReplaceArgs argName (a:rest) index = if a == leafArgNAme
+    then leafArgNAme : computedRest
+    else a : computedRest
+    where
+        leafArgNAme = Leaf (Symbol argName)
+        computedRest = lambdaReplaceArgs argName rest index

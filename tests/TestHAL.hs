@@ -262,3 +262,11 @@ case_HALCond_Ex2 = case runParser parseExpr "(cond ((eq? 'foo (car '(foo bar))) 
       where
         expected = Right (Leaf $ Symbol "here", [])
         actual = HAL.evaluate ([expr], [])
+
+case_HALLambda_Ex1 :: Assertion 
+case_HALLambda_Ex1 = case runParser parseExpr "(lambda (a b) (+ a b))" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right (Leaf $ Symbol "here", [])
+        actual = HAL.evaluate ([expr], [])

@@ -8,13 +8,14 @@
 module HALData where
 import Data.List
 
-data Atom = Symbol String | Int Integer | Nil | ATrue | AFalse | ANothing
+data Atom = Symbol String | Int Integer | Nil | ATrue | AFalse | ANothing | Index Integer
 
-data Expr = Procedure [Expr] | Leaf Atom | List [Expr]
+data Expr = Procedure [Expr] | Lambda ([Expr], Int) | Leaf Atom | List [Expr]
 
 instance Eq Atom where
     (==) (Symbol a) (Symbol b) = a == b
     (==) (Int a) (Int b) = a == b
+    (==) (Index a) (Index b) = a == b
     (==) Nil Nil = True
     (==) ATrue ATrue = True
     (==) AFalse AFalse = True
@@ -30,6 +31,7 @@ instance Eq Expr where
 instance Show Atom where
     show (Symbol x) = x
     show (Int x) = show x
+    show (Index x) = "Argument n° " ++ show x
     show Nil = "Nil"
     show ATrue = "#t"
     show AFalse = "#f"
@@ -38,6 +40,7 @@ instance Show Atom where
 instance Show Expr where
     show (Leaf x) = show x
     show (Procedure x) = '(' : printList x " " ++ ")"
+    show (Lambda x) = "#<procedure>"
     show (List x) = HALData.showList (List x)
 
 showList :: Expr -> String 
