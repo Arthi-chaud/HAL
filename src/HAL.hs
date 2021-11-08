@@ -100,7 +100,8 @@ cdr :: EvaluatorFunction Expr
 cdr args =  do
     (args1, env) <- evaluateAll args
     case args1 of
-        [List (a:b)] -> Right (List b, env)
+        [List (a:b:c)] -> Right (b, env)
+        [List (a:_)] -> Right (Leaf Nil, env)
         x -> Left ("cdr: '" ++ show (head x) ++ "' Invalid argument type")
 
 getDefine :: Expr -> Env -> Either ErrorMessage Expr 
