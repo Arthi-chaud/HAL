@@ -7,6 +7,7 @@
 
 module Main where
 import System.Environment
+import System.Console.Haskeline
 import AdvancedParser
 import System.Exit
 
@@ -22,4 +23,18 @@ main = do
     let repl = "-i" `elem` args || null args
     let args2 = filter (/= "-i") args
     filesContent <- getFilesContents args2
+    if repl then
+        runInputT defaultSettings loop
+    else
+        return ()
     exitWith (ExitSuccess)
+    where
+        loop :: InputT IO ()
+        loop = do
+            minput <- getInputLine "> "
+            case minput of
+                Nothing -> return ()
+                Just "exit" -> return ()
+                Just input -> do
+                    outputStrLn input
+                    loop
