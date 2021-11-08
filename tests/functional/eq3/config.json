@@ -1,10 +1,10 @@
 {
-    "commandLineArguments": "eq.scm",
+    "commandLineArguments": "tests/functional/assets/eq3.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 0,
     "stdoutFilter": null,
     "stderrFilter": null,
     "emptyEnv": null,
-    "setup": "echo '(eq? 'foo 'bar)' > eq.scm",
-    "teardown": "rm car.scm"
+    "setup": null,
+    "teardown": null
 }

@@ -64,8 +64,8 @@ evaluateMathematicalProcedure name args = case name of
     "+" -> run (Evaluator (operate addHAL) name Illimited) args
     "-" -> run (Evaluator (operate subHAL) name Illimited) args
     "*" -> run (Evaluator (operate mulHAL) name Illimited) args
-    "%" -> run (Evaluator (operate modHAL) name $ Expected 2) args
-    "/" -> run (Evaluator (operate divHAL) name $ Expected 2) args
+    "mod" -> run (Evaluator (operate modHAL) name $ Expected 2) args
+    "div" -> run (Evaluator (operate divHAL) name $ Expected 2) args
     _ -> Left $ name ++ ": Not a function"
 
 cons :: EvaluatorFunction Expr 

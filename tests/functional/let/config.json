@@ -1,10 +1,10 @@
 {
-    "commandLineArguments": "let.scm",
+    "commandLineArguments": "tests/functional/assets/let.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 0,
     "stdoutFilter": null,
     "stderrFilter": null,
     "emptyEnv": null,
-    "setup": "echo \"(let ((a 2) (b (+ 1 2))) (+ a b)\" > let.scm",
-    "teardown": "rm let.scm"
+    "setup": null,
+    "teardown": null
 }

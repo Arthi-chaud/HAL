@@ -1,10 +1,10 @@
 {
-    "commandLineArguments": "define.scm",
+    "commandLineArguments": "tests/functional/assets/define3.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 0,
     "stdoutFilter": null,
     "stderrFilter": null,
     "emptyEnv": null,
-    "setup": "echo \"(define add (lambda (a b) (+ a b)))\" > define.scm",
-    "teardown": "rm define.scm"
+    "setup": null,
+    "teardown": null
 }

@@ -1,10 +1,10 @@
 {
-    "commandLineArguments": "car.scm",
+    "commandLineArguments": "tests/functional/assets/car.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 0,
     "stdoutFilter": null,
     "stderrFilter": null,
     "emptyEnv": null,
-    "setup": "echo '(car (cons 1 2))' > car.scm",
-    "teardown": "rm car.scm"
+    "setup": null,
+    "teardown": null
 }

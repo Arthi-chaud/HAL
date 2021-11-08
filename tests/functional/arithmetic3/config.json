@@ -1,10 +1,10 @@
 {
-    "commandLineArguments": "arithmetic3.scm",
+    "commandLineArguments": "tests/functional/assets/arithmetic3.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 0,
     "stdoutFilter": null,
     "stderrFilter": null,
     "emptyEnv": null,
-    "setup": "echo '(mod (+ 5 5) 3)' > arithmetic3.scm",
-    "teardown": "rm arithmetic3.scm"
+    "setup": null,
+    "teardown": null
 }

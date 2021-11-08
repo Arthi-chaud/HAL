@@ -1,10 +1,10 @@
 {
-    "commandLineArguments": "quote.scm",
+    "commandLineArguments": "tests/functional/assets/quote2.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 0,
     "stdoutFilter": null,
     "stderrFilter": null,
     "emptyEnv": null,
-    "setup": "echo '(quote (+ 1 2))' > quote.scm",
-    "teardown": "rm quote.scm"
+    "setup": null,
+    "teardown": null
 }

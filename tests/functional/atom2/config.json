@@ -1,10 +1,10 @@
 {
-    "commandLineArguments": "atom.scm",
+    "commandLineArguments": "tests/functional/assets/atom2.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 0,
     "stdoutFilter": null,
     "stderrFilter": null,
     "emptyEnv": null,
-    "setup": "echo '(atom? '(1 2 3))' > atom.scm",
-    "teardown": "rm car.scm"
+    "setup": null,
+    "teardown": null
 }

@@ -1,10 +1,10 @@
 {
-    "commandLineArguments": "define.scm",
+    "commandLineArguments": "tests/functional/assets/define0.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 84,
     "stdoutFilter": null,
     "stderrFilter": null,
     "emptyEnv": null,
-    "setup": "echo \"foo\" > define.scm",
-    "teardown": "rm define.scm"
+    "setup": null,
+    "teardown": null
 }

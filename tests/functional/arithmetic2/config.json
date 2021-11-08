@@ -1,10 +1,10 @@
 {
-    "commandLineArguments": "arithmetic2.scm",
+    "commandLineArguments": "tests/functional/assets/arithmetic2.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 0,
     "stdoutFilter": null,
     "stderrFilter": null,
     "emptyEnv": null,
-    "setup": "echo '(< (* 2 2) 5)' > arithmetic2.scm",
-    "teardown": "rm arithmetic2.scm"
+    "setup": null,
+    "teardown": null
 }
