@@ -1,0 +1,19 @@
+name: Unit tests
+on:
+  push:
+    branches:
+      - master
+      - dev
+jobs:
+  ExecUnitTests:
+    runs-on: ubuntu-20.04
+    container: arthichaud/ci_docker_image
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Install stack
+        run: yes | curl -sSL https://get.haskellstack.org/ | sh
+      - name: Permissions bug workaround
+        run: "chown -R $(id -un):$(id -gn) ~"
+      - name: Run unit tests
+        run: make tests_run
+        shell: bash

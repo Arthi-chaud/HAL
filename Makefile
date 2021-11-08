@@ -6,14 +6,12 @@
 ##
 
 NAME		=	hal
-
-
-BUILD_FOLDER := $(shell stack path --local-install-root)/bin
+BUILD_FOLDER := $$(stack --no-terminal path --local-install-root)/bin
 
 all:		$(NAME)
 
 $(NAME):
-			stack build
+			stack build --allow-different-user
 			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 
 
@@ -27,8 +25,8 @@ fclean:		clean
 re:			fclean all
 
 tests_run:
-			stack test
+			stack test --allow-different-user
 tests_run_with_coverage:
-			stack test --coverage
+			stack test --coverage --allow-different-user
 
 .PHONY:	tests_run tests_run_with_coverage clean fclean all

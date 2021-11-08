@@ -8,7 +8,7 @@
 module HALData where
 import Data.List
 
-data Atom = Symbol String | Int Integer | Nil | ATrue | AFalse
+data Atom = Symbol String | Int Integer | Nil | ATrue | AFalse | ANothing
 
 data Expr = Procedure [Expr] | Leaf Atom | List [Expr]
 
@@ -18,6 +18,7 @@ instance Eq Atom where
     (==) Nil Nil = True
     (==) ATrue ATrue = True
     (==) AFalse AFalse = True
+    (==) ANothing ANothing = True
     (==) _  _ = False
 
 instance Eq Expr where
@@ -32,6 +33,7 @@ instance Show Atom where
     show Nil = "Nil"
     show ATrue = "#t"
     show AFalse = "#f"
+    show ANothing = ""
 
 instance Show Expr where
     show (Leaf x) = show x
