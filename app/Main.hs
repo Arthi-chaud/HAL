@@ -10,7 +10,16 @@ import System.Environment
 import AdvancedParser
 import System.Exit
 
+
 type FilePath = String
 
+getFilesContents :: [String] -> IO [String]
+getFilesContents list = sequence (readFile <$> list)
+
 main :: IO Int
-main = exitWith (ExitSuccess)
+main = do
+    args <- getArgs
+    let repl = "-i" `elem` args || null args
+    let args2 = filter (/= "-i") args
+    filesContent <- getFilesContents args2
+    exitWith (ExitSuccess)
