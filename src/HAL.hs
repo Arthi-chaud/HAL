@@ -11,24 +11,44 @@ import Evaluator
 import HALData
 import HALParser
 import Data.List
+import Text.Printf
 
 evaluate :: EvaluatorFunction Expr
 evaluate ([], _) = Left "Empty Expression"
+evaluate ((Lambda x):args, env) = evaluateLamba (Lambda x) (args, env)
 evaluate (expr, env) = case head expr of
     Leaf (Symbol x) -> do
         defined <- getDefine (Leaf $ Symbol x) env
         return (defined, env)
     Leaf x -> Right (Leaf x, env)
     List x -> Right (List x, env)
+    Procedure (Leaf (Symbol "lambda"):args) -> do
+        (res, newenv) <- evaluateProcedure "lambda" (args, env)
+        HAL.evaluate (res : tail expr, newenv)
     Procedure (Leaf (Symbol name):args) -> evaluateProcedure name (args, env)
+    Procedure x -> evaluate (x, env)
     x -> Left (show x ++ ": Not implemented yet")
 
-evaluateLamba :: EvaluatorFunction Expr
+evaluateAll :: (Args, Env) -> Either ErrorMessage ([Expr], Env)
+evaluateAll ([], env) = Right ([], env)
+evaluateAll (first:rest, env) = do
+    (evaluated, env2) <- HAL.evaluate ([first], env)
+    (evaluatedRest, env3) <- evaluateAll (rest, env2)
+    return (evaluated : evaluatedRest, env3)
+
+evaluateLamba :: Expr -> EvaluatorFunction Expr
+evaluateLamba (Lambda (body, count)) (args, env) = if length args /= count
+    then Left (printf "lambda: Expected %d arguments, got %d" count (length args))
+    else do
+        (res, env) <- lambdaInsertArgs body (args, env)
+        HAL.evaluate ([Procedure res], env)
+evaluateLamba _ (_, env) = Left "lambda evaluation: invalid argument"
 
 evaluateProcedure :: String -> EvaluatorFunction Expr
 evaluateProcedure name args = case name of
     "define" -> run (Evaluator define name $ Expected 2) args
     "quote" -> run (Evaluator quote name $ Expected 1) args
+    "lambda" -> run (Evaluator lambda name $ Expected 2) args
     "cons" -> run (Evaluator cons name $ Expected 2) args
     "car" -> run (Evaluator car name $ Expected 1) args
     "cdr" -> run (Evaluator cdr name $ Expected 1) args
@@ -46,14 +66,7 @@ evaluateMathematicalProcedure name args = case name of
     "*" -> run (Evaluator (operate mulHAL) name Illimited) args
     "%" -> run (Evaluator (operate modHAL) name $ Expected 2) args
     "/" -> run (Evaluator (operate divHAL) name $ Expected 2) args
-    _ -> Left $ name ++ ": Not implemented"
-
-evaluateAll :: (Args, Env) -> Either ErrorMessage ([Expr], Env)
-evaluateAll ([], env) = Right ([], env)
-evaluateAll (first:rest, env) = do
-    (evaluated, env2) <- HAL.evaluate ([first], env)
-    (evaluatedRest, env3) <- evaluateAll (rest, env2)
-    return (evaluated : evaluatedRest, env3)
+    _ -> Left $ name ++ ": Not a function"
 
 cons :: EvaluatorFunction Expr 
 cons expr = case evaluateAll expr of
@@ -95,9 +108,9 @@ getDefine key env = case filter ((==key).fst) env of
 
 define :: EvaluatorFunction Expr
 define (args, env) = case args of
-    (Leaf (Symbol name) : x : _) -> Right (Leaf (Symbol name), (Leaf $ Symbol name, x) : env)
+    (Leaf (Symbol name) : x : _) -> Right (Leaf (Symbol name), nub (env ++ [(Leaf $ Symbol name, x)]))
     (Procedure a: Procedure b :_) -> case a of
-        (Leaf (Symbol aname) : arest) -> Right (Leaf (Symbol aname), (Procedure a , Procedure b) : env)
+        (Leaf (Symbol aname) : arest) -> Right (Leaf (Symbol aname), nub (env ++ [(Procedure a , Procedure b)]))
         x -> Left ("define: '" ++ show x ++ "' Invalid argument type")
     x -> Left ("define: '" ++ show (head x) ++ "' Invalid argument type")
 
@@ -171,9 +184,8 @@ cond (args, env) = case args of
     x -> Left $ "cond: " ++ show x ++ " Invalid argument type"
 
 lambda :: EvaluatorFunction Expr
-lambda args = do
-    (args1, env) <- evaluateAll args
-    case args1 of
+lambda (args, env) = do
+    case args of
         (Procedure vars:Procedure body:_) -> if vars == nub vars
             then case lambdaReplaceAllArgs vars body 0 of
                 Nothing -> Left "lambda: Invalid parameter type"
@@ -182,19 +194,30 @@ lambda args = do
         x -> Left "lambda: Invalid argument count"
 
 lambdaReplaceAllArgs :: [Expr] -> [Expr] -> Int -> Maybe [Expr]
-lambdaReplaceAllArgs [] _ _ = Just []
-lambdaReplaceAllArgs (arg:r) array index = do
-    newRest <- lambdaReplaceAllArgs r array (index + 1)
-    case arg of
-        Leaf (Symbol x) ->  Just (lambdaReplaceArgs x newRest index)
-        _ -> Nothing
+lambdaReplaceAllArgs [] body _ = Just body
+lambdaReplaceAllArgs (Leaf (Symbol x):r) body argIndex = do
+    newBody <- lambdaReplaceAllArgs r body (argIndex + 1)
+    return (lambdaReplaceArgs x newBody argIndex)
+lambdaReplaceAllArgs _ _ _ = Nothing
        
 
 lambdaReplaceArgs :: String -> [Expr] -> Int -> [Expr]
-lambdaReplaceArgs argName [] index = []
-lambdaReplaceArgs argName (a:rest) index = if a == leafArgNAme
-    then leafArgNAme : computedRest
+lambdaReplaceArgs argName [] _ = []
+lambdaReplaceArgs argName (a:rest) index = if a == leafArgName
+    then Leaf (Index index) : computedRest
     else a : computedRest
     where
-        leafArgNAme = Leaf (Symbol argName)
+        leafArgName = Leaf (Symbol argName)
         computedRest = lambdaReplaceArgs argName rest index
+
+lambdaInsertArgs :: Args -> EvaluatorFunction [Expr]
+lambdaInsertArgs [] (_, env) = Right ([], env)
+lambdaInsertArgs (first:body) (args, env) = case first of
+    Leaf (Index x) -> if x >= length args
+        then Left "lambda evaluation: invalid argument count"
+        else do
+            (replaced, newEnv) <- lambdaInsertArgs body (args, env)
+            return ((args !! x : replaced), newEnv)
+    x -> do
+        (replaced, newEnv) <- lambdaInsertArgs body (args, env)
+        return ((first : replaced), newEnv)

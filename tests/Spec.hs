@@ -50,6 +50,7 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHALParser: case_parseExpr_quoteOnQuote2" TestHALParser.case_parseExpr_quoteOnQuote2,
         testCase "TestHALParser: case_parseExpr_quoteOnQuote3" TestHALParser.case_parseExpr_quoteOnQuote3,
         testCase "TestHALParser: case_parseExpr_quoteOnQuote3bis" TestHALParser.case_parseExpr_quoteOnQuote3bis,
+        testCase "TestHALParser: case_parseExpr_multipleExpr" TestHALParser.case_parseExpr_multipleExpr,
 
         testCase "TestHAL: case_HALCons_Leafs" TestHAL.case_HALCons_Leafs,
         testCase "TestHAL: case_HALCons_LeafAndList" TestHAL.case_HALCons_LeafAndList,
@@ -95,5 +96,10 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHAL: case_HALCond_NoParam" TestHAL.case_HALCond_NoParam,
         testCase "TestHAL: case_HALCond_InvalidParam" TestHAL.case_HALCond_InvalidParam,
         testCase "TestHAL: case_HALCond_Ex1" TestHAL.case_HALCond_Ex1,
-        testCase "TestHAL: case_HALCond_Ex2" TestHAL.case_HALCond_Ex2
+        testCase "TestHAL: case_HALCond_Ex2" TestHAL.case_HALCond_Ex2,
+        testCase "TestHAL: case_HALLambda_Ex1" TestHAL.case_HALLambda_Ex1,
+        testCase "TestHAL: case_HALLambda_Ex1Evaluation" TestHAL.case_HALLambda_Ex1Evaluation,
+        testCase "TestHAL: case_HALLambda_Ex1EvaluationFromString" TestHAL.case_HALLambda_Ex1EvaluationFromString,
+        testCase "TestHAL: case_HALLambda_DefinedParam" TestHAL.case_HALLambda_DefinedParam,
+        testCase "TestHAL: case_HALLambda_DefinedParamFull" TestHAL.case_HALLambda_DefinedParamFull
     ]

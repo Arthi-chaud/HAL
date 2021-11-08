@@ -71,3 +71,9 @@ case_parseExpr_quoteOnQuote3bis =  assertEqual "Example 1" expected actual
     where 
       expected = Just (Procedure [Leaf $ Symbol "quote", Procedure [Leaf $ Symbol "quote", Procedure [Leaf $ Symbol "quote", Leaf $ Int 1]]], "")
       actual = runParser parseExpr "(quote (quote (quote 1)))"
+
+case_parseExpr_multipleExpr :: Assertion
+case_parseExpr_multipleExpr =  assertEqual "Example 1" expected actual
+    where 
+      expected = Just ([Procedure [Leaf $ Symbol "quote", Leaf $ Int 1], Procedure [Leaf $ Symbol "quote", Leaf $ Int 2], Procedure [Leaf $ Symbol "quote", Leaf $ Int 3]], "")
+      actual = runParser parseAllExpr "(quote 1) (quote 2) (quote 3)"

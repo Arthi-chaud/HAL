@@ -17,7 +17,7 @@ import Test.HUnit (Assertion, assertEqual, assertFailure)
 case_HALCons_Leafs :: Assertion
 case_HALCons_Leafs =  assertEqual "" expected actual
     where 
-      expected = Right $ (List [Leaf $ Int 1, Leaf $ Int 2], [])
+      expected = Right (List [Leaf $ Int 1, Leaf $ Int 2], [])
       actual = cons ([Leaf $ Int 1, Leaf $ Int 2], [])
 
 case_HALCons_LeafAndList :: Assertion
@@ -264,9 +264,44 @@ case_HALCond_Ex2 = case runParser parseExpr "(cond ((eq? 'foo (car '(foo bar))) 
         actual = HAL.evaluate ([expr], [])
 
 case_HALLambda_Ex1 :: Assertion 
-case_HALLambda_Ex1 = case runParser parseExpr "(lambda (a b) (+ a b))" of
+case_HALLambda_Ex1 = assertEqual "" expected actual
+      where
+        expected = Right (Lambda ([Leaf $ Symbol "+", Leaf $ Index 0, Leaf $ Index 1], 2), [])
+        actual = lambda ([Procedure [Leaf $ Symbol "a", Leaf $ Symbol "b"], Procedure [Leaf $ Symbol "+", Leaf $ Symbol "a", Leaf $ Symbol "b"]], [])
+
+case_HALLambda_Ex1Evaluation :: Assertion 
+case_HALLambda_Ex1Evaluation = assertEqual "" expected actual
+      where
+        expected = Right (Leaf $ Int 7, [])
+        actual =  HAL.evaluate ([Lambda ([Leaf $ Symbol "+", Leaf $ Index 0, Leaf $ Index 1], 2), Leaf $ Int 5, Leaf $ Int 2], [])
+
+case_HALLambda_Ex1EvaluationFromString :: Assertion 
+case_HALLambda_Ex1EvaluationFromString = case runParser parseExpr "((lambda (a) (+ a foo)) bar)" of
     Nothing -> assertFailure "Parsing failed"
     Just (expr, _) -> assertEqual "" expected actual
       where
-        expected = Right (Leaf $ Symbol "here", [])
-        actual = HAL.evaluate ([expr], [])
+        expected = Procedure [
+                      Procedure [Leaf $ Symbol "lambda", 
+                          Procedure [Leaf $ Symbol "a"],
+                          Procedure [Leaf $ Symbol "+", Leaf $ Symbol "a", Leaf $ Symbol "foo"]],
+                      Leaf $ Symbol "bar"
+                  ]
+        actual = expr
+
+case_HALLambda_DefinedParam :: Assertion 
+case_HALLambda_DefinedParam = case runParser parseExpr "((lambda (a) (+ a foo)) bar)" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right (Leaf $ Int 63, env)
+        actual = HAL.evaluate ([expr], env)
+        env =  [(Leaf $ Symbol "foo", Leaf $ Int 42), (Leaf $ Symbol "bar", Leaf $ Int 21)]
+
+case_HALLambda_DefinedParamFull :: Assertion 
+case_HALLambda_DefinedParamFull = case runParser parseAllExpr "(define foo 42) (define bar 21) ((lambda (a) (+ a foo)) bar)" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right ([Leaf $ Symbol "foo", Leaf $ Symbol "bar", Leaf $ Int 63], env)
+        actual = HAL.evaluateAll (expr, [])
+        env =  [(Leaf $ Symbol "foo", Leaf $ Int 42), (Leaf $ Symbol "bar", Leaf $ Int 21)]

@@ -49,3 +49,13 @@ parseExpr = (parseWhiteSpaces *> (parseProc <|> parseQuoteLAtom)) <|> parseLAtom
         parseProc =  parseParenthesis <%> parseExprContent
         parseQuoteLAtom =  parseQuote <|> parseLAtom
         parseLAtom = Leaf <$> parseAtom
+
+parseAllExpr :: Parser [Expr]
+parseAllExpr = Parser parseAll
+    where
+        parseAll :: String -> Maybe ([Expr], String)
+        parseAll s = do
+            (parsed, rest) <- runParser parseExpr s
+            case rest of
+                [] -> Just ([parsed], rest)
+                _ -> runParser ((parsed:) <$> parseAllExpr) rest
