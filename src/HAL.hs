@@ -24,9 +24,11 @@ evaluate (expr, env) = case head expr of
     List x -> Right (List x, env)
     Procedure (Leaf (Symbol "lambda"):args) -> do
         (res, newenv) <- evaluateProcedure "lambda" (args, env)
-        HAL.evaluate (res : tail expr, newenv)
+        case tail expr of
+            [] -> return (res, newenv)
+            _ -> HAL.evaluate (res : tail expr, newenv)
     Procedure (Leaf (Symbol name):args) -> evaluateProcedure name (args, env)
-    Procedure x -> evaluate (x, env)
+    Procedure x -> HAL.evaluate (x, env)
     x -> Left (show x ++ ": Not implemented yet")
 
 evaluateAll :: (Args, Env) -> Either ErrorMessage ([Expr], Env)
@@ -112,18 +114,24 @@ cdr args =  do
         x -> Left ("cdr: '" ++ show (head x) ++ "' Invalid argument type")
 
 getDefine :: Expr -> Env -> Either ErrorMessage Expr 
-getDefine (Leaf (Symbol key)) env = case filter ((==Leaf (Symbol key)).fst) env of
+getDefine  (Leaf (Int x)) env = Right (Leaf $ Int x)
+getDefine  (Leaf AFalse) env = Right (Leaf AFalse)
+getDefine  (Leaf ATrue ) env = Right (Leaf ATrue)
+getDefine  (Leaf Nil) env = Right (Leaf Nil)
+getDefine key env = case filter ((==key).fst) env of
     [] -> Left (show key ++ ": Undefined")
     (a:_) -> Right (snd a)
-getDefine  key env = Right key
 
 define :: EvaluatorFunction Expr
-define (args, env) = case args of
-    (Leaf (Symbol name) : x : _) -> Right (Leaf (Symbol name), nub (env ++ [(Leaf $ Symbol name, x)]))
-    (Procedure a: Procedure b :_) -> case a of
-        (Leaf (Symbol aname) : arest) -> Right (Leaf (Symbol aname), nub (env ++ [(Procedure a , Procedure b)]))
-        x -> Left ("define: '" ++ show x ++ "' Invalid argument type")
-    x -> Left ("define: '" ++ show (head x) ++ "' Invalid argument type")
+define (key:value, env) = do
+    (newValue, _) <- HAL.evaluate (value, env)
+    case [key, newValue] of
+        (Leaf (Symbol name) : x : _) -> Right (Leaf (Symbol name), nub (env ++ [(Leaf $ Symbol name, x)]))
+        (Procedure a: Procedure b :_) -> case a of
+            (Leaf (Symbol aname) : arest) -> Right (Leaf (Symbol aname), nub (env ++ [(Procedure a , Procedure b)]))
+            x -> Left ("define: '" ++ show x ++ "' Invalid argument type")
+        x -> Left ("define: '" ++ show (head x) ++ "' Invalid argument type")
+define _ = Left "define: Invalid argument count"
 
 eq :: EvaluatorFunction Expr
 eq args = do

@@ -143,9 +143,9 @@ case_HALDefine_Ex1 =  assertEqual "" expected actual
 case_HALDefine_Ex2 :: Assertion
 case_HALDefine_Ex2 =  assertEqual "" expected actual
     where 
-      expected = Right (Leaf (Symbol "add"), [(Leaf (Symbol "add"), lambda)])
+      expected = Right (Leaf (Symbol "add"), [(Leaf (Symbol "add"), Lambda ([Leaf $ Symbol "+", Leaf $ Index 0, Leaf $ Index 1], 2))])
       actual = define ([Leaf (Symbol "add"), lambda], [])
-      lambda = Procedure [Leaf $ Symbol "lambda", List [Leaf $ Symbol "a", Leaf $ Symbol "b"], Procedure [Leaf $ Symbol "+", Leaf $ Symbol "a", Leaf $ Symbol "b"]]
+      lambda = Procedure [Leaf $ Symbol "lambda", Procedure [Leaf $ Symbol "a", Leaf $ Symbol "b"], Procedure [Leaf $ Symbol "+", Leaf $ Symbol "a", Leaf $ Symbol "b"]]
 
 case_HALEq_Ex1 :: Assertion
 case_HALEq_Ex1 =  assertEqual "" expected actual
@@ -330,3 +330,11 @@ case_HALLambda_DefinedParamFull = case runParser parseAllExpr "(define foo 42) (
         expected = Right ([Leaf $ Symbol "foo", Leaf $ Symbol "bar", Leaf $ Int 63], env)
         actual = HAL.evaluateAll (expr, [])
         env =  [(Leaf $ Symbol "foo", Leaf $ Int 42), (Leaf $ Symbol "bar", Leaf $ Int 21)]
+
+case_HALDefinedLambda1 :: Assertion 
+case_HALDefinedLambda1 = case runParser parseAllExpr "(define foo (lambda (a b) (+ a b)))" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right ([Leaf $ Symbol "foo"], [(Leaf $ Symbol "foo", Lambda ([Leaf $ Symbol "+", Leaf $ Index 0, Leaf $ Index 1], 2))])
+        actual = HAL.evaluateAll (expr, [])
