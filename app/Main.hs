@@ -15,7 +15,6 @@ import Evaluator
 import HALData
 import HALParser
 import HAL (evaluateAll)
-import HALParser (parseAllExpr)
 
 type FilePath = String
 
@@ -52,8 +51,9 @@ loopREPL env = do
 
 mainREPL :: [String] -> IO Int
 mainREPL filesContent = do
-        runInputT defaultSettings $ loopREPL []
-        exitSuccess
+        case evaluateFilesContents filesContent of
+            Left err -> putStrLn err >> exitWith (ExitFailure 84)
+            Right (_, env) -> runInputT defaultSettings (loopREPL env) >> exitSuccess
 
 main :: IO Int
 main = do
