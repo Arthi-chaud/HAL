@@ -61,7 +61,7 @@ parseAllExpr = Parser parseAll
     where
         parseAll :: String -> Maybe ([Expr], String)
         parseAll s = do
-            (parsed, rest) <- runParser parseExpr s
+            (parsed, rest) <- runParser (parseExpr <* parseWhitespaces) s
             case rest of
                 [] -> Just ([parsed], rest)
                 _ -> runParser ((parsed:) <$> parseAllExpr) rest

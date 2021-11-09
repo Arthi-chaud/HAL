@@ -25,11 +25,11 @@ evaluateFilesContents :: [String] -> Either ErrorMessage ([Expr], Env)
 evaluateFilesContents filesContent
     | errorExpression = Left "Parsing Error"
     | otherwise = do
-    evaluateAll (expressions, [])
+        evaluateAll (expressions, [])
     where
-        expressionsMaybe = runParser parseExpr <$> filesContent
+        expressionsMaybe = runParser parseAllExpr <$> filesContent
         errorExpression = any isNothing expressionsMaybe
-        expressions = fst . fromJust <$> filter isJust expressionsMaybe
+        expressions = concat $ fst . fromJust <$> filter isJust expressionsMaybe
 
 mainFiles :: [String] -> IO Int
 mainFiles filesContent = case evaluateFilesContents filesContent of

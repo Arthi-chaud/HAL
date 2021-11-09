@@ -185,11 +185,9 @@ parseWhile f = Parser $ \s -> case s of
     (a:b) -> if f a then runParser ((a:) <$> parseWhile f) b
              else Just ("", a:b)
 
-
 parseWhitespaces :: Parser String
 parseWhitespaces = parseWhile isSpace
         
-
 --parseWord :: Parser String
 --parseWord = Parser $ \s -> case runParser parseWhitespaces s of
 --    Just ("", "") -> Just ([], "")
