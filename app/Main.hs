@@ -12,26 +12,30 @@ import AdvancedParser
 import Data.Maybe
 import System.Exit
 import Evaluator
+import HALData
 import HALParser
 import HAL (evaluateAll)
+import HALParser (parseAllExpr)
 
 type FilePath = String
 
 getFilesContents :: [String] -> IO [String]
 getFilesContents list = sequence (readFile <$> list)
 
-mainFiles :: [String] -> IO Int
-mainFiles filesContent
-    | errorExpression = exitWith $ ExitFailure 84
+evaluateFilesContents :: [String] -> Either ErrorMessage ([Expr], Env)
+evaluateFilesContents filesContent
+    | errorExpression = Left "Parsing Error"
     | otherwise = do
-    case evaluateAll (expressions, []) of
-        Left err -> putStrLn err >> exitWith (ExitFailure 84)
-        Right (a, env) -> print $ head a
-    exitSuccess
+    evaluateAll (expressions, [])
     where
         expressionsMaybe = runParser parseExpr <$> filesContent
         errorExpression = any isNothing expressionsMaybe
         expressions = fst . fromJust <$> filter isJust expressionsMaybe
+
+mainFiles :: [String] -> IO Int
+mainFiles filesContent = case evaluateFilesContents filesContent of
+        Left err -> putStrLn err >> exitWith (ExitFailure 84)
+        Right (a, env) -> print (last a) >> exitSuccess
 
 
 loopREPL :: Env -> InputT IO ()
