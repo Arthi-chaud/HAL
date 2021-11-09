@@ -247,21 +247,17 @@ lambdaInsertArgs (first:body) (args, env) = case first of
         return ((first : replaced), newEnv)
 
 letFct :: EvaluatorFunction Expr
-letFct (args, env) =
-    case list of
-    (Procedure exprList) -> do
-        let (errorParams, params) = partitionEithers $ letFctGetParams <$> exprList
-        let keys = fst <$> params
-        let values = snd <$> params
+letFct ([Procedure exprList, body], env) =
         if not (null errorParams) then
             Left $ head errorParams
         else case lambda ([Procedure keys, body], env) of
             Right (l, newenv) -> HAL.evaluate ([Procedure (l:values)], newenv)
-            Left err -> Left err 
-    _ -> Left "let: Invalid argument type2"
-    where
-        body = last args
-        list = head args
+            Left err -> Left err
+        where
+            (errorParams, params) = partitionEithers $ letFctGetParams <$> exprList
+            keys = fst <$> params
+            values = snd <$> params
+letFct _ = Left "let: Invalid argument count"
 
 letFctGetParams :: Expr -> Either ErrorMessage (Expr, Expr)
 letFctGetParams (Procedure a)
