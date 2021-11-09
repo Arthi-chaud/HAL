@@ -1,5 +1,5 @@
 {
-    "commandLineArguments": "tests/functional/assets/invocationfoo.scm invocationfoo.scm",
+    "commandLineArguments": "tests/functional/assets/invocationfoo.scm invocationbar.scm",
     "interpreterArguments": null,
     "expectedReturnCode": 0,
     "stdoutFilter": null,

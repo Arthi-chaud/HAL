@@ -73,17 +73,23 @@ evaluateMathematicalProcedure name args = case name of
 
 cons :: EvaluatorFunction Expr 
 cons expr = case evaluateAll expr of
-    Right (args1:args2:_, env) -> case args2 of
-        List x -> Right (List (args1 : x), env)
+    Right ([args1, args2], env) -> case args2 of
+        List x -> if not (null x) && last x == Leaf Nil
+            then Right (List (args1 : x), env)
+            else Right (List (args1 : x ++ [Leaf Nil]), env)
         Procedure x -> Left $ show args2
-        x -> Right (List (args1 : [args2]), env)
+        x -> Right (List [args1, args2], env)
+    Right (_, _) -> Left "cons: Invalid arguments"
     Left message -> Left message
 
 quote :: EvaluatorFunction Expr 
 quote (args, env) = case head args of
     Procedure (Leaf (Symbol "quote") : rest) ->
         run quoteOnQuote (rest, env)
-    Procedure x -> Right (List x, env)
+    Procedure x -> if length x <= 2 then Right (List x, env)
+                   else case last x of
+                       Leaf Nil -> Right (List x, env)
+                       _ -> Right (List (x ++ [Leaf Nil]), env)
     x -> return (x, env)
     where
         quoteToSymbol = \res -> Leaf (Symbol ('\'' : show res))
@@ -100,8 +106,9 @@ cdr :: EvaluatorFunction Expr
 cdr args =  do
     (args1, env) <- evaluateAll args
     case args1 of
-        [List (a:b:c)] -> Right (b, env)
-        [List (a:_)] -> Right (Leaf Nil, env)
+        [List [a, b]] -> Right (b, env)
+        [List (a:b)] -> Right (List b, env)
+        --[List (a:_)] -> Right (Leaf Nil, env)
         x -> Left ("cdr: '" ++ show (head x) ++ "' Invalid argument type")
 
 getDefine :: Expr -> Env -> Either ErrorMessage Expr 

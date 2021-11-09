@@ -24,9 +24,12 @@ parseNil =  Nil <$ (parseWhitespaces *> (parseChar '(' <&> parseChar ')'))
 parseQuote :: Parser Expr
 parseQuote = Parser $ \s -> do
     (r, rest) <- runParser (parseWhiteSpaces *> parseChar '\'' *> parser) s
-    return (Procedure [Leaf $ Symbol "quote", r], rest)
+    case r of
+        Procedure ((Leaf (Symbol "quote"):a)) -> return (Procedure (Leaf (Symbol "quote"):[r]), rest)
+        Procedure a -> return (Procedure [Leaf $ Symbol "quote", Procedure (a ++ [Leaf Nil]) ], rest)
+        _ -> return (Procedure [Leaf $ Symbol "quote", r], rest)
     where
-        parser = Leaf <$> parseNil <|> parseExpr <|> (Leaf <$> parseAtom)
+        parser = Leaf <$> parseNil <|> parseQuoteExpr <|> (Leaf <$> parseAtom)
 
 parseQuoteExpr :: Parser Expr
 parseQuoteExpr = parseQuote <|> parseExpr

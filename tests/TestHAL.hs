@@ -23,8 +23,16 @@ case_HALCons_Leafs =  assertEqual "" expected actual
 case_HALCons_LeafAndList :: Assertion
 case_HALCons_LeafAndList =  assertEqual "" expected actual
     where 
-      expected = Right $ (List [Leaf $ Int 1, Leaf $ Int 2, Leaf $ Int 3], [])
+      expected = Right $ (List [Leaf $ Int 1, Leaf $ Int 2, Leaf $ Int 3, Leaf Nil], [])
       actual = cons ([Leaf $ Int 1, Procedure [Leaf $ Symbol "quote", Procedure [Leaf $ Int 2, Leaf $ Int 3]]], [])
+
+case_HALCons_ListAndList :: Assertion
+case_HALCons_ListAndList =  case runParser parseExpr "(cons '(1 2 3) '(4 5 6))" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right (List [List [Leaf $ Int 1, Leaf $ Int 2, Leaf $ Int 3, Leaf Nil], Leaf $ Int 4, Leaf $ Int 5, Leaf $ Int 6 , Leaf Nil], [])
+        actual = HAL.evaluate ([expr], [])
 
 case_HALCons_ListAndLeaf :: Assertion
 case_HALCons_ListAndLeaf =  assertEqual "" expected actual
@@ -33,16 +41,16 @@ case_HALCons_ListAndLeaf =  assertEqual "" expected actual
       actual = cons ([Procedure [Leaf $ Symbol "quote", Procedure [Leaf $ Int 2]], Leaf $ Int 1], [])
 
 
-case_HALCons_ListAndList :: Assertion
-case_HALCons_ListAndList =  assertEqual "" expected actual
+case_HALCons_ListAndList2 :: Assertion
+case_HALCons_ListAndList2 =  assertEqual "" expected actual
     where 
-      expected = Right $ (List [List[Leaf $ Int 1], Leaf $ Int 2, Leaf $ Int 3], [])
+      expected = Right $ (List [List[Leaf $ Int 1], Leaf $ Int 2, Leaf $ Int 3, Leaf $ Nil], [])
       actual = cons ([Procedure [Leaf $ Symbol "quote", Procedure [Leaf $ Int 1]], Procedure [Leaf $ Symbol "quote", Procedure [Leaf $ Int 2, Leaf $ Int 3]]], [])
 
 case_HALQuote_List :: Assertion
 case_HALQuote_List =  assertEqual "" expected actual
     where 
-      expected = Right $ (List [Leaf $ Int 1, Leaf $ Int 2, Leaf $ Int 3], [])
+      expected = Right $ (List [Leaf $ Int 1, Leaf $ Int 2, Leaf $ Int 3, Leaf $ Nil], [])
       actual = quote ([Procedure [Leaf $ Int 1, Leaf $ Int 2, Leaf $ Int 3]], [])
 
 case_HALQuote_Int :: Assertion
@@ -72,7 +80,7 @@ case_HALCar_List =  assertEqual "" expected actual
 case_HALCar_EmptyList :: Assertion
 case_HALCar_EmptyList =  assertEqual "" expected actual
     where 
-      expected = Left "car: 'Nil' Invalid argument type"
+      expected = Left "car: '()' Invalid argument type"
       actual = car ([Procedure [Leaf $ Symbol "quote", Leaf Nil]], [])
 
 case_HALCar_Int :: Assertion
@@ -82,27 +90,29 @@ case_HALCar_Int =  assertEqual "" expected actual
       actual = car ([Leaf $ Int 1], [])
 
 case_HALCar_NestedList :: Assertion
-case_HALCar_NestedList =  assertEqual "" expected actual
-    where 
-      expected = Right $ (List [Leaf $ Int 1, Leaf $ Int  2, Leaf $ Int  3], [])
-      actual = car ([List [List [Leaf $ Int  1, Leaf $ Int  2, Leaf $ Int  3], List [Leaf $ Int  4, Leaf $ Int  5, Leaf $ Int  6]]], [])
+case_HALCar_NestedList =  case runParser parseExpr "(car (cons '(1 2 3) '(4 5 6)))" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right (List [Leaf $ Int 1, Leaf $ Int 2, Leaf $ Int 3, Leaf Nil], [])
+        actual = HAL.evaluate ([expr], [])
 
 case_HALCdr_List :: Assertion
 case_HALCdr_List =  assertEqual "" expected actual
     where 
-      expected = Right $ (Leaf $ Int 2, [])
+      expected = Right (List [Leaf $ Int 2, Leaf $ Int 3], [])
       actual = cdr ([List [Leaf $ Int 1, Leaf $ Int 2, Leaf $ Int 3]], [])
 
 case_HALCdr_OneElemList :: Assertion
 case_HALCdr_OneElemList =  assertEqual "" expected actual
     where 
-      expected = Right $ (Leaf Nil, [])
-      actual = cdr ([Procedure [Leaf $ Symbol "quote", Procedure [Leaf $ Int 1]]], [])
+      expected = Right (Leaf Nil, [])
+      actual = cdr ([Procedure [Leaf $ Symbol "quote", Procedure [Leaf $ Int 1, Leaf Nil]]], [])
 
 case_HALCdr_EmptyList :: Assertion
 case_HALCdr_EmptyList =  assertEqual "" expected actual
     where 
-      expected = Left "cdr: 'Nil' Invalid argument type"
+      expected = Left "cdr: '()' Invalid argument type"
       actual = cdr ([Procedure [Leaf $ Symbol "quote", Leaf Nil]], [])
 
 case_HALCdr_Int :: Assertion
@@ -116,6 +126,13 @@ case_HALCdr_NestedList =  assertEqual "" expected actual
     where 
       expected = Right $ (List [Leaf $ Int  4, Leaf $ Int  5, Leaf $ Int  6], [])
       actual = cdr ([List [List [Leaf $ Int  1, Leaf $ Int  2, Leaf $ Int  3], List [Leaf $ Int  4, Leaf $ Int  5, Leaf $ Int  6]]], [])
+
+case_HALCdr_NestedList2 :: Assertion
+case_HALCdr_NestedList2 =  assertEqual "" expected actual
+    where 
+      expected = Right $ (List [Leaf $ Int  4, Leaf $ Int  5, Leaf $ Int  6], [])
+      actual = cdr ([List [List [Leaf $ Int  1, Leaf $ Int  2, Leaf $ Int  3], Leaf $ Int  4, Leaf $ Int  5, Leaf $ Int  6]], [])
+
 
 case_HALDefine_Ex1 :: Assertion
 case_HALDefine_Ex1 =  assertEqual "" expected actual

@@ -1,1 +1,1 @@
-(* foo 2)
+(define foo 21)

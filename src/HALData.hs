@@ -33,7 +33,7 @@ instance Show Atom where
     show (Symbol x) = x
     show (Int x) = show x
     show (Index x) = "Argument n° " ++ show x
-    show Nil = "Nil"
+    show Nil = "()"
     show ATrue = "#t"
     show AFalse = "#f"
     show ANothing = ""
@@ -47,9 +47,11 @@ instance Show Expr where
 showList :: Expr -> String 
 showList (List a) = case length a of
     2 -> case last a of
-        (Leaf Nil) -> showListContent $ init a
+        (Leaf Nil) -> show $ head a
         _ -> showListAsTuple a
-    _ -> showListContent a
+    _ -> case last a of
+        (Leaf Nil) -> showListContent $ init a
+        _ -> showListContent a
 showList _ = show AFalse
 
 showListAsTuple :: [Expr] -> String
