@@ -106,5 +106,6 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHAL: case_HALLambda_DefinedParam" TestHAL.case_HALLambda_DefinedParam,
         testCase "TestHAL: case_HALLambda_DefinedParamFull" TestHAL.case_HALLambda_DefinedParamFull,
         testCase "TestHAL: case_HALDefinedLambda1" TestHAL.case_HALDefinedLambda1,
-        testCase "TestHAL: case_HALCallDefinedLambda" TestHAL.case_HALCallDefinedLambda
+        testCase "TestHAL: case_HALCallDefinedLambda" TestHAL.case_HALCallDefinedLambda,
+        testCase "TestHAL: case_HALLet" TestHAL.case_HALLet
     ]

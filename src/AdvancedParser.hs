@@ -20,7 +20,7 @@ data Parser a = Parser {
 
 instance Functor Parser where
     fmap fct parser = Parser (\s -> do
-        (parsed, rest)    <- runParser parser s
+        (parsed, rest) <- runParser parser s
         Just (fct parsed, rest)
         )
 
