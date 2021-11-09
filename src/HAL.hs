@@ -59,7 +59,10 @@ evaluateProcedure name args = case name of
     "cond" -> run (Evaluator cond name Illimited) args
     ">" -> run (Evaluator (HAL.compare (>)) name $ Expected 2) args
     "<" -> run (Evaluator (HAL.compare (<)) name $ Expected 2) args
-    _ -> evaluateMathematicalProcedure name args
+    _ -> case getDefine (Leaf (Symbol name)) (snd args) of
+        Right x -> HAL.evaluate (x : fst args, snd args) 
+        _ -> evaluateMathematicalProcedure name args 
+
 
 evaluateMathematicalProcedure :: String -> EvaluatorFunction Expr
 evaluateMathematicalProcedure "+" ([Leaf (Int a)], env) = Right (Leaf (Int a), env)

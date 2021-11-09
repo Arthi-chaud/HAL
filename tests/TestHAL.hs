@@ -338,3 +338,13 @@ case_HALDefinedLambda1 = case runParser parseAllExpr "(define foo (lambda (a b) 
       where
         expected = Right ([Leaf $ Symbol "foo"], [(Leaf $ Symbol "foo", Lambda ([Leaf $ Symbol "+", Leaf $ Index 0, Leaf $ Index 1], 2))])
         actual = HAL.evaluateAll (expr, [])
+
+
+case_HALCallDefinedLambda :: Assertion 
+case_HALCallDefinedLambda = case runParser parseAllExpr "(add 1 2)" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right ([Leaf $ Int 3], env)
+        actual = HAL.evaluateAll (expr, env)
+        env = [(Leaf $ Symbol "add", Lambda ([Leaf $ Symbol "+", Leaf $ Index 0, Leaf $ Index 1], 2))]
