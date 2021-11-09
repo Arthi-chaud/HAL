@@ -14,9 +14,12 @@ import HALData
 parseAtom :: Parser Atom
 parseAtom = Parser $ \s -> do
     (parsed, rest) <- runParser (parseWhitespaces *> parseWord) s
-    case runParser parseInt parsed of
-        Just (int, "") -> Just (Int int, rest)
-        _ -> return (Symbol parsed, rest)
+    case parsed of
+        "#f" -> return (AFalse, rest)
+        "#t" -> return (ATrue, rest)
+        _ -> case runParser parseInt parsed of
+            Just (int, "") -> Just (Int int, rest)
+            _ -> return (Symbol parsed, rest)
 
 parseNil :: Parser Atom
 parseNil =  Nil <$ (parseWhitespaces *> (parseChar '(' <&> parseChar ')'))

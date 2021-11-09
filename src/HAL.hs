@@ -112,9 +112,10 @@ cdr args =  do
         x -> Left ("cdr: '" ++ show (head x) ++ "' Invalid argument type")
 
 getDefine :: Expr -> Env -> Either ErrorMessage Expr 
-getDefine key env = case filter ((==key).fst) env of
+getDefine (Leaf (Symbol key)) env = case filter ((==Leaf (Symbol key)).fst) env of
     [] -> Left (show key ++ ": Undefined")
     (a:_) -> Right (snd a)
+getDefine  key env = Right key
 
 define :: EvaluatorFunction Expr
 define (args, env) = case args of
