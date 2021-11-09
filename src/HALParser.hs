@@ -39,18 +39,18 @@ parseQuoteExpr = parseQuote <|> parseExpr
 
 parseExprContent :: Parser Expr
 parseExprContent = Parser $ \s -> do
-    (parsed, rest) <- runParser parser s
-    case runParser parseWhitespaces rest of
-        Just (_, "") -> return (Procedure [parsed], rest)
+    (parsed, rest) <- runParser (parseWhitespaces *> p <* parseWhitespaces)  s
+    case rest of
+        "" -> return (Procedure [parsed], "")
         _ -> case runParser parseExprContent rest of
             Just (Leaf x, rest2) -> return (Procedure (parsed: [Leaf x]), rest2)
             Just (Procedure x, rest2) -> return (Procedure (parsed: x), rest2)
             _ -> Nothing
     where
-        parser = parseQuoteExpr <|> (Leaf <$> parseAtom)
+        p = parseQuoteExpr <|> (Leaf <$> parseAtom)
 
 parseExpr :: Parser Expr
-parseExpr = (parseWhiteSpaces *> (parseProc <|> parseQuoteLAtom)) <|> parseLAtom
+parseExpr = parseWhiteSpaces *> ((parseProc <|> parseQuoteLAtom) <|> parseLAtom)
     where
         parseProc =  parseParenthesis <%> parseExprContent
         parseQuoteLAtom =  parseQuote <|> parseLAtom
