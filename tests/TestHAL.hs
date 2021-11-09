@@ -348,3 +348,11 @@ case_HALCallDefinedLambda = case runParser parseAllExpr "(add 1 2)" of
         expected = Right ([Leaf $ Int 3], env)
         actual = HAL.evaluateAll (expr, env)
         env = [(Leaf $ Symbol "add", Lambda ([Leaf $ Symbol "+", Leaf $ Index 0, Leaf $ Index 1], 2))]
+
+case_HALLet :: Assertion 
+case_HALLet = case runParser parseAllExpr "(let ((a 2) (b (+ 1 2))) (+ a b))" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right ([Procedure [Lambda ([Leaf $ Symbol "+", Leaf $ Index 0, Leaf $ Index 1], 2), Leaf $ Int 2, Procedure [Leaf $ Symbol "+", Leaf $ Int 1, Leaf $ Int 2]]], [])
+        actual = HAL.evaluateAll (expr, [])

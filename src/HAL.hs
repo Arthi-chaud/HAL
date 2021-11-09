@@ -247,26 +247,24 @@ lambdaInsertArgs (first:body) (args, env) = case first of
         return ((first : replaced), newEnv)
 
 letFct :: EvaluatorFunction Expr
-letFct (args, env) = do
-    if not (null errorKeys) || not (null errorValues) then
-        Left "let: Invalid argument type"
-    else do
-        return $ lambda ([Procedure keys, body], env) values
+letFct (args, env) =
+    case list of
+    (Procedure exprList) -> do
+        let (errorParams, params) = partitionEithers $ letFctGetParams <$> exprList
+        let keys = fst <$> params
+        let values = snd <$> params
+        if not (null errorParams) then
+            Left $ head errorParams
+        else case lambda ([Procedure keys, body], env) of
+            Right (l, newenv) -> HAL.evaluate ([Procedure (l:values)], newenv)
+            Left err -> Left err 
+    _ -> Left "let: Invalid argument type2"
     where
         body = last args
-        list = init args
-        (errorKeys, keys) = partitionEithers $ letFctGetKey <$> list
-        (errorValues, values) = partitionEithers $ letFctGetValue <$> list
+        list = head args
 
-letFctGetKey :: Expr -> Either ErrorMessage  Expr
-letFctGetKey (Procedure a)
-    | length a == 2 = Right $ head a
-    | otherwise = Left "let: Invalid argument type"
-letFctGetKey _ = Left "let: Invalid argument type"
-
-
-letFctGetValue :: Expr -> Either ErrorMessage  Expr
-letFctGetValue (Procedure a)
-    | length a == 2 = Right $ last a
-    | otherwise = Left "let: Invalid argument type"
-letFctGetValue _ = Left "let: Invalid argument type"
+letFctGetParams :: Expr -> Either ErrorMessage (Expr, Expr)
+letFctGetParams (Procedure a)
+    | length a == 2 = Right (head a, last a)
+    | otherwise = Left "let: Invalid argument type3"
+letFctGetParams _ = Left "let: Invalid argument type4"
