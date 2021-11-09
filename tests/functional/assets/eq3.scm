@@ -1,1 +1,1 @@
-(eq? foo bar)
+(eq? 'foo 'bar)

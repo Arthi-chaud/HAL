@@ -1,1 +1,1 @@
-(quote (quote A)
+(quote (quote A))
