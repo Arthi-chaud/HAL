@@ -13,6 +13,8 @@ import HALParser
 import Data.List
 import Text.Printf
 
+import Data.Either
+
 evaluate :: EvaluatorFunction Expr
 evaluate ([], _) = Left "Empty Expression"
 evaluate ((Lambda x):args, env) = evaluateLamba (Lambda x) (args, env)
@@ -51,6 +53,7 @@ evaluateProcedure name args = case name of
     "define" -> run (Evaluator define name $ Expected 2) args
     "quote" -> run (Evaluator quote name $ Expected 1) args
     "lambda" -> run (Evaluator lambda name $ Expected 2) args
+    "let" -> run (Evaluator letFct name $ Expected 2) args
     "cons" -> run (Evaluator cons name $ Expected 2) args
     "car" -> run (Evaluator car name $ Expected 1) args
     "cdr" -> run (Evaluator cdr name $ Expected 1) args
@@ -242,3 +245,28 @@ lambdaInsertArgs (first:body) (args, env) = case first of
     x -> do
         (replaced, newEnv) <- lambdaInsertArgs body (args, env)
         return ((first : replaced), newEnv)
+
+letFct :: EvaluatorFunction Expr
+letFct (args, env) = do
+    if not (null errorKeys) || not (null errorValues) then
+        Left "let: Invalid argument type"
+    else do
+        return $ lambda ([Procedure keys, body], env) values
+    where
+        body = last args
+        list = init args
+        (errorKeys, keys) = partitionEithers $ letFctGetKey <$> list
+        (errorValues, values) = partitionEithers $ letFctGetValue <$> list
+
+letFctGetKey :: Expr -> Either ErrorMessage  Expr
+letFctGetKey (Procedure a)
+    | length a == 2 = Right $ head a
+    | otherwise = Left "let: Invalid argument type"
+letFctGetKey _ = Left "let: Invalid argument type"
+
+
+letFctGetValue :: Expr -> Either ErrorMessage  Expr
+letFctGetValue (Procedure a)
+    | length a == 2 = Right $ last a
+    | otherwise = Left "let: Invalid argument type"
+letFctGetValue _ = Left "let: Invalid argument type"
