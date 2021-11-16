@@ -24,8 +24,7 @@ getFilesContents list = sequence (readFile <$> list)
 evaluateFilesContents :: [String] -> Either ErrorMessage ([Expr], Env)
 evaluateFilesContents filesContent
     | errorExpression = Left "Parsing Error"
-    | otherwise = do
-        evaluateAll (expressions, [])
+    | otherwise = evaluateAll (expressions, [])
     where
         expressionsMaybe = runParser parseAllExpr <$> filesContent
         errorExpression = any isNothing expressionsMaybe
@@ -50,10 +49,9 @@ loopREPL env = do
             Nothing -> outputStrLn "Parsing Error" >> loopREPL env
 
 mainREPL :: [String] -> IO Int
-mainREPL filesContent = do
-        case evaluateFilesContents filesContent of
-            Left err -> putStrLn err >> exitWith (ExitFailure 84)
-            Right (_, env) -> runInputT defaultSettings (loopREPL env) >> exitSuccess
+mainREPL filesContent = case evaluateFilesContents filesContent of
+    Left err -> putStrLn err >> exitWith (ExitFailure 84)
+    Right (_, env) -> runInputT defaultSettings (loopREPL env) >> exitSuccess
 
 main :: IO Int
 main = do
