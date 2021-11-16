@@ -1,0 +1,10 @@
+{
+    "commandLineArguments": "tests/functional/assets/define6.scm",
+    "interpreterArguments": null,
+    "expectedReturnCode": 0,
+    "stdoutFilter": null,
+    "stderrFilter": null,
+    "emptyEnv": null,
+    "setup": null,
+    "teardown": null
+}

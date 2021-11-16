@@ -129,6 +129,9 @@ getDefine key env = case filter ((==key).fst) env of
     (a:_) -> Right (snd a)
 
 define :: EvaluatorFunction Expr
+define ((Procedure ((Leaf (Symbol name)):keys)): Procedure body : _, env) = do
+    (l, _)  <- lambda ([Procedure keys, Procedure body], env)
+    return (Leaf $ Symbol name, nub (env ++ [(Leaf $ Symbol name, l)]))
 define (key:value, env) = do
     (newValue, _) <- HAL.evaluate (value, env)
     case [key, newValue] of

@@ -356,3 +356,11 @@ case_HALLet = case runParser parseAllExpr "(let ((a 2) (b (+ 1 2))) (+ a b))" of
       where
         expected = Right ([Leaf $ Int 5], [])
         actual = HAL.evaluateAll (expr, [])
+
+case_HALDefineLambda :: Assertion 
+case_HALDefineLambda = case runParser parseAllExpr "(define (sub a b) (- a b))" of
+    Nothing -> assertFailure "Parsing failed"
+    Just (expr, _) -> assertEqual "" expected actual
+      where
+        expected = Right ([Leaf $ Symbol "sub"], [(Leaf $ Symbol "sub",  Lambda ([Leaf $ Symbol "-", Leaf $ Index 0, Leaf $ Index 1], 2))])
+        actual = HAL.evaluateAll (expr, [])

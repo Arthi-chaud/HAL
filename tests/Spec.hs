@@ -75,6 +75,7 @@ specs = testGroup "Campaign-related functions"
 
         testCase "TestHAL: case_HALDefine_Ex1" TestHAL.case_HALDefine_Ex1,
         testCase "TestHAL: case_HALDefine_Ex2" TestHAL.case_HALDefine_Ex2,
+        testCase "TestHAL: case_HALDefineLambda" TestHAL.case_HALDefineLambda,
 
         testCase "TestHAL: case_HALEq_Ex1" TestHAL.case_HALEq_Ex1,
         testCase "TestHAL: case_HALEq_Ex2" TestHAL.case_HALEq_Ex2,

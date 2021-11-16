@@ -1,2 +1,2 @@
 (define (sub a b) (- a b))
-(sub 3 1)
+(sub 10 2)
