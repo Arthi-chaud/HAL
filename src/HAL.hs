@@ -208,14 +208,13 @@ cond (args, env) = case args of
     x -> Left $ "cond: " ++ show x ++ " Invalid argument type"
 
 lambda :: EvaluatorFunction Expr
-lambda (args, env) = do
-    case args of
-        (Procedure vars:Procedure body:_) -> if vars == nub vars
-            then case lambdaReplaceAllArgs vars body 0 of
-                Nothing -> Left "lambda: Invalid parameter type"
-                Just computedBody -> Right (Lambda (computedBody, length vars), env)
-            else Left "lambda: Duplicate in parameter list"
-        x -> Left "lambda: Invalid argument count"
+lambda (args, env) = case args of
+    (Procedure vars:Procedure body:_) -> if vars == nub vars
+        then case lambdaReplaceAllArgs vars body 0 of
+            Nothing -> Left "lambda: Invalid parameter type"
+            Just computedBody -> Right (Lambda (computedBody, length vars), env)
+        else Left "lambda: Duplicate in parameter list"
+    x -> Left "lambda: Invalid argument count"
 
 lambdaReplaceAllArgs :: [Expr] -> [Expr] -> Int -> Maybe [Expr]
 lambdaReplaceAllArgs [] body _ = Just body
