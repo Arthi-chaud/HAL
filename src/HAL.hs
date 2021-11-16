@@ -229,6 +229,10 @@ lambdaReplaceAllArgs _ _ _ = Nothing
 
 lambdaReplaceArgs :: String -> [Expr] -> Int -> [Expr]
 lambdaReplaceArgs argName [] _ = []
+lambdaReplaceArgs argName (Procedure a:rest) index = (newA:newRest)
+    where
+        newA = Procedure $ lambdaReplaceArgs argName a index
+        newRest = lambdaReplaceArgs argName rest index
 lambdaReplaceArgs argName (a:rest) index = if a == leafArgName
     then Leaf (Index index) : computedRest
     else a : computedRest
@@ -244,6 +248,10 @@ lambdaInsertArgs (first:body) (args, env) = case first of
         else do
             (replaced, newEnv) <- lambdaInsertArgs body (args, env)
             return ((args !! x : replaced), newEnv)
+    Procedure x -> do
+        (newX, newEnv) <- lambdaInsertArgs x (args, env)
+        (replaced, newEnv2) <- lambdaInsertArgs body (args, newEnv)
+        return ((Procedure newX : replaced), newEnv)
     x -> do
         (replaced, newEnv) <- lambdaInsertArgs body (args, env)
         return ((first : replaced), newEnv)

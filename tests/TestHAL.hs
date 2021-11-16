@@ -364,3 +364,11 @@ case_HALDefineLambda = case runParser parseAllExpr "(define (sub a b) (- a b))" 
       where
         expected = Right ([Leaf $ Symbol "sub"], [(Leaf $ Symbol "sub",  Lambda ([Leaf $ Symbol "-", Leaf $ Index 0, Leaf $ Index 1], 2))])
         actual = HAL.evaluateAll (expr, [])
+
+-- case_HALCaro4TheWin :: Assertion
+-- case_HALCaro4TheWin = case runParser parseAllExpr "(define (append l1 l2) (cond ((eq? l1 '()) l2) (#t (cons (car l1) (append (cdr l1) l2)))))" of
+--     Nothing -> assertFailure "Parsing failed"
+--     Just (expr, _) -> assertEqual "" expected actual
+--       where
+--         expected = Right ([Leaf $ Symbol "append"], [(Leaf $ Symbol "sub",  Lambda ([Leaf $ Symbol "-", Leaf $ Index 0, Leaf $ Index 1], 2))])
+--         actual = HAL.evaluateAll (expr, [])
