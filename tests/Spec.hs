@@ -54,6 +54,7 @@ specs = testGroup "Campaign-related functions"
         testCase "TestHALParser: case_parseExpr_multipleLine" TestHALParser.case_parseExpr_multipleLine,
 
         testCase "TestHAL: case_HALCons_Leafs" TestHAL.case_HALCons_Leafs,
+        testCase "TestHAL: case_HALCons_LeafAndLeaf" TestHAL.case_HALCons_LeafAndLeaf,
         testCase "TestHAL: case_HALCons_LeafAndList" TestHAL.case_HALCons_LeafAndList,
         testCase "TestHAL: case_HALCons_ListAndLeaf" TestHAL.case_HALCons_ListAndLeaf,
         testCase "TestHAL: case_HALCons_ListAndList" TestHAL.case_HALCons_ListAndList,

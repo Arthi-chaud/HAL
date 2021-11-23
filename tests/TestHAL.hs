@@ -20,6 +20,12 @@ case_HALCons_Leafs =  assertEqual "" expected actual
       expected = Right (List [Leaf $ Int 1, Leaf $ Int 2], [])
       actual = cons ([Leaf $ Int 1, Leaf $ Int 2], [])
 
+case_HALCons_LeafAndLeaf:: Assertion
+case_HALCons_LeafAndLeaf =  assertEqual "" expected actual
+    where 
+      expected = Right (List [Leaf $ Int 1, Leaf Nil], [])
+      actual = HAL.evaluate ([Procedure [Leaf $ Symbol "cons", Leaf $ Int 1, Procedure [Leaf $ Symbol "quote", Leaf Nil]]], [])
+
 case_HALCons_LeafAndList :: Assertion
 case_HALCons_LeafAndList =  assertEqual "" expected actual
     where 

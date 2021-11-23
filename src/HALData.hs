@@ -47,7 +47,7 @@ instance Show Expr where
 showList :: Expr -> String 
 showList (List a) = case length a of
     2 -> case last a of
-        (Leaf Nil) -> show $ head a
+        (Leaf Nil) -> "(" ++ show (head a) ++ ")"
         _ -> showListAsTuple a
     _ -> case last a of
         (Leaf Nil) -> showListContent $ init a
