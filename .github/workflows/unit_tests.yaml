@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - dev
+      - workflow
 jobs:
   ExecUnitTests:
     runs-on: ubuntu-20.04
