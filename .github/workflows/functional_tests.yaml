@@ -7,7 +7,6 @@ on:
 jobs:
   ExecFunctionalTests:
     runs-on: ubuntu-20.04
-    container: arthichaud/ci_docker_image
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
