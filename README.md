@@ -77,3 +77,8 @@ marvinette --exec-all
 - GNU's Makefile (used to wrap compilation)
 - HUnit (for unit testing)
 - [Marvinette](https://github.com/Arthi-chaud/Marvinette) (for functional testing)
+
+## Contributors
+
+- [Arthur JAMET](https://github.com/Arthi-chaud)
+- [Louis AUZURET](https://github.com/GitBluub)
