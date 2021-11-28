@@ -14,7 +14,7 @@ jobs:
       - name: Install stack
         run: yes | curl -sSL https://get.haskellstack.org/ | sh
       - name: Install stack dependencies
-        run: sudo apt-get gcc ghc make libffi zlib libgmp libtinfo
+        run: sudo apt-get install gcc ghc make libffi zlib libgmp libtinfo
       - name: Permissions bug workaround
         run: "chown -R $(id -un):$(id -gn) ~"
       - name: Compile Project
