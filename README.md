@@ -3,6 +3,10 @@
 HAL is a Lisp interpreter in Haskell. It lets you interpret Lisp files and run instruction from the command line. [Chez-Scheme](https://github.com/cisco/chezscheme) was used as reference interpreter.
 This is an EPITECH School project (Nantes, Promo 2024)
 
+[![Build](https://github.com/EpitechPromo2024/B-FUN-501-NAN-5-1-HAL-arthur.jamet/actions/workflows/build.yaml/badge.svg)](https://github.com/EpitechPromo2024/B-FUN-501-NAN-5-1-HAL-arthur.jamet/actions/workflows/build.yaml)
+[![Functional tests](https://github.com/EpitechPromo2024/B-FUN-501-NAN-5-1-HAL-arthur.jamet/actions/workflows/functional_tests.yaml/badge.svg?branch=master)](https://github.com/EpitechPromo2024/B-FUN-501-NAN-5-1-HAL-arthur.jamet/actions/workflows/functional_tests.yaml)
+[![Unit tests](https://github.com/EpitechPromo2024/B-FUN-501-NAN-5-1-HAL-arthur.jamet/actions/workflows/unit_tests.yaml/badge.svg?branch=master)](https://github.com/EpitechPromo2024/B-FUN-501-NAN-5-1-HAL-arthur.jamet/actions/workflows/unit_tests.yaml)
+
 ## Features
 
 ### Supports
