@@ -14,7 +14,7 @@ jobs:
           php-version: '8.0'
       - uses: actions/checkout@v2.3.4
       - name: Install stack
-        run: yes | curl -sSL https://get.haskellstack.org/ | sh
+        run: curl -sSL https://get.haskellstack.org/ | sh
       - name: Install stack dependencies
         run: sudo apt-get install gcc ghc make -y
       - name: Permissions bug workaround
