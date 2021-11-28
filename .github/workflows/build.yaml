@@ -15,8 +15,6 @@ jobs:
         run: yes | curl -sSL https://get.haskellstack.org/ | sh
       - name: Install stack dependencies
         run: sudo apt-get install gcc ghc make -y
-      - name: Permissions bug workaround
-        run: "chown -R $(id -un):$(id -gn) ~"
       - name: Compile Project
         run: make
         shell: bash
