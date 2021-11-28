@@ -1,8 +1,9 @@
 name: Build
 on:
   push:
-    - master
-    - workflow
+    branches:
+      - master
+      - workflow
 
 jobs:
   Build:
