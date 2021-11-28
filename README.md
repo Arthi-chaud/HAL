@@ -1,6 +1,6 @@
 [![HAL](assets/hal.png)](assets/hal.png)
 
-HAL is a Lisp interpreter in Haskell. It lets you interpret Lisp files and run. [Chez-Scheme](https://github.com/cisco/chezscheme) was used as reference interpreter.
+HAL is a Lisp interpreter in Haskell. It lets you interpret Lisp files and run instruction from the command line. [Chez-Scheme](https://github.com/cisco/chezscheme) was used as reference interpreter.
 This is an EPITECH School project (Nantes, Promo 2024)
 
 ## Features
