@@ -19,6 +19,10 @@ jobs:
       - name: Compile Project
         run: make
         shell: bash
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
       - name: Get Marvinette
         run: git clone https://github.com/Arthi-chaud/Marvinette.git && cd Marvinette && sudo php MarvinetteInstall.php && cd ..
       - name: Run tests
