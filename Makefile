@@ -11,7 +11,7 @@ BUILD_FOLDER := $$(stack --no-terminal path --local-install-root)/bin
 all:		$(NAME)
 
 $(NAME):
-			stack build --allow-different-user
+			stack build --allow-different-user --ghc-options -O2
 			cp $(BUILD_FOLDER)/HAL ./$(NAME)
 
 
